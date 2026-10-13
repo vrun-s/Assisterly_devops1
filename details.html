@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registration Confirmation — Assisterly</title>
+  <meta name="description" content="Registration confirmation and caregiver profile summary.">
+  <link rel="stylesheet" href="style.css">
+  <script src="details.js" defer></script>
+</head>
+<body>
+
+  <!-- Header Section -->
+  <header>
+    <div class="container">
+      <div class="header-branding">
+        <svg class="header-logo animate-heartbeat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+        </svg>
+        <div class="header-title-area">
+          <h1>Assisterly</h1>
+          <p>Registration Confirmation Portal</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <!-- Theme Toggle Switch -->
+        <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle light/dark theme">
+          <svg class="theme-toggle-icon moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+          <svg class="theme-toggle-icon sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </button>
+        <div class="header-student-badge">
+          <span class="student-name">Varun</span>
+          <span class="student-reg">23IT721</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" style="padding-top: var(--spacing-lg);">
+    
+    <!-- Success Banner -->
+    <div class="animate-fade-in-up" style="background-color: var(--color-sand); border-left: 5px solid var(--color-sage); padding: var(--spacing-md); border-radius: var(--border-radius-md); margin-bottom: var(--spacing-lg); text-align: center; box-shadow: var(--shadow-subtle);">
+      <div style="font-size: 3rem; color: var(--color-sage); line-height: 1; margin-bottom: var(--spacing-xs);">✓</div>
+      <h2 style="font-family: var(--font-display); color: var(--color-pine); margin-bottom: var(--spacing-xs);">Registration Successful!</h2>
+      <p style="margin: 0; font-size: 1rem; color: var(--color-ink);">The caregiver screening and background audit profile has been initialized.</p>
+    </div>
+
+    <!-- Profile Details Card -->
+    <section class="registration-container animate-fade-in-up" style="max-width: 900px; margin: 0 auto;">
+      <div class="registration-card" id="profile-details-card">
+        <span class="eyebrow">Caregiver Profile Summary</span>
+        <h2 style="margin-bottom: var(--spacing-md);">Submitted Credentials</h2>
+        
+        <div class="details-grid">
+          <div class="detail-row">
+            <span class="detail-label">Full Name:</span>
+            <span class="detail-value" id="disp-name">Loading...</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Email Address:</span>
+            <span class="detail-value" id="disp-email">Loading...</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Phone Number:</span>
+            <span class="detail-value" id="disp-phone">Loading...</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Age:</span>
+            <span class="detail-value" id="disp-age">Loading...</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Date of Birth:</span>
+            <span class="detail-value" id="disp-dob">Loading...</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Preferred Time:</span>
+            <span class="detail-value" id="disp-time">Loading...</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Gender:</span>
+            <span class="detail-value" id="disp-gender">Loading...</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Security Status:</span>
+            <span class="detail-value" style="color: var(--color-terracotta); font-weight: 700; font-family: var(--font-mono);">[PENDING VERIFICATION]</span>
+          </div>
+          <div class="detail-row full-width">
+            <span class="detail-label">Residential Address:</span>
+            <span class="detail-value" id="disp-address">Loading...</span>
+          </div>
+          <div class="detail-row full-width">
+            <span class="detail-label">Declared Skills & Interests:</span>
+            <div class="detail-value" id="disp-skills">Loading...</div>
+          </div>
+          <div class="detail-row full-width">
+            <span class="detail-label">Additional Comments & Notes:</span>
+            <div class="detail-value" id="disp-notes" style="background-color: var(--bg-linen); border: 1px solid var(--color-sand); border-radius: var(--border-radius-sm); padding: var(--spacing-sm); min-height: 80px; font-style: italic;">None.</div>
+          </div>
+        </div>
+
+        <div class="form-actions" style="margin-top: var(--spacing-lg);">
+          <button type="button" id="btn-print" class="btn btn-reset">Print Summary</button>
+          <a href="index.html" class="btn btn-submit" style="text-decoration: none; text-align: center;">Back to Dashboard &rarr;</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer Section -->
+  <footer>
+    <div class="container">
+      <p>&copy; 2026 Assisterly. All rights reserved.</p>
+      <p>Designed by <strong>Varun</strong> (Roll No: 23IT721) for the <strong>Full Stack Development Laboratory</strong>, Department of Information Technology, Coimbatore Institute of Technology.</p>
+      <p style="margin-top: 0.5rem; font-size: 0.85rem; color: var(--color-sage);">
+        Contact Support: <a href="mailto:support@assisterly.com" style="color: var(--color-terracotta); text-decoration: none;">support@assisterly.com</a> | Toll-Free: <a href="tel:+911800102123" style="color: var(--color-terracotta); text-decoration: none;">+91 1800 102 123</a>
+      </p>
+    </div>
+  </footer>
+
+</body>
+</html>

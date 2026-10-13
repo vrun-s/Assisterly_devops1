@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Care Guide Videos — Assisterly</title>
+  <meta name="description" content="Instructional care-guide videos caregivers watch before a shift, with a custom HTML5 video player.">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="assignment1.css">
+  <script src="video.js" defer></script>
+</head>
+
+<body>
+
+  <header>
+    <div class="container">
+      <div class="header-branding">
+        <svg class="header-logo animate-heartbeat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+        </svg>
+        <div class="header-title-area">
+          <h1>Assisterly</h1>
+          <p>Care Guide Video Library <span class="typing-cursor"></span></p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <div class="live-clock-badge" id="live-clock-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          <span id="live-clock">Loading Time...</span>
+        </div>
+        <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle light/dark theme">
+          <svg class="theme-toggle-icon moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+          <svg class="theme-toggle-icon sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+          </svg>
+        </button>
+        <div class="header-student-badge">
+          <span class="student-name">Varun</span>
+          <span class="student-reg">23IT721</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <nav class="subpage-nav">
+      <a href="index.html" class="back-link">&larr; Main Dashboard</a>
+      <div class="assignment-links">
+        <a href="directory.html">Directory</a>
+        <a href="video.html" class="current">Care Guide</a>
+        <a href="signup.html">Sign Up</a>
+        <a href="quiz.html">Certification Quiz</a>
+        <a href="shift-notes.html">Shift Notes</a>
+        <a href="dashboard.html">Shift Dashboard</a>
+      </div>
+    </nav>
+
+    <section id="video-intro" class="animate-fade-in-up">
+      <span class="eyebrow">Assignment 1 — Event Handling</span>
+      <h2>Care Guide Video Player</h2>
+      <p style="margin-bottom: var(--spacing-md);">
+        Caregivers watch these short instructional clips attached to a client's care plan before starting a shift.
+        Select a guide, then use the custom player controls below.
+      </p>
+
+      <div class="video-guide-list" id="video-guide-list">
+        <button class="active" data-title="Safe Patient Lifting & Transfer Technique" data-desc="Proper body mechanics for transferring a bedridden patient without strain injury.">Patient Lifting Technique</button>
+        <button data-title="Medication Routine Walkthrough" data-desc="Step-by-step walkthrough of preparing and logging a client's daily medication routine.">Medication Routine</button>
+        <button data-title="Wound Care & Dressing Steps" data-desc="Sterile technique for cleaning and re-dressing a post-surgical wound site.">Wound Care Steps</button>
+      </div>
+
+      <div class="video-player-shell">
+        <video id="care-video" preload="metadata">
+          <source src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4" type="video/mp4">
+          Your browser does not support embedded video.
+        </video>
+        <div class="video-controls-bar">
+          <button class="video-play-btn" id="video-play-btn" aria-label="Play video" data-tooltip="Play / Pause">
+            <svg id="play-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+            <svg id="pause-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="display:none;"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
+          </button>
+          <div class="video-progress-container" id="video-progress-container" data-tooltip="Click to seek">
+            <div class="video-progress-fill" id="video-progress-fill"></div>
+          </div>
+          <span class="video-time-label" id="video-time-label">0:00 / 0:00</span>
+          <div class="video-volume-group">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3z"/></svg>
+            <input type="range" id="video-volume" min="0" max="1" step="0.05" value="1" aria-label="Volume">
+          </div>
+        </div>
+      </div>
+
+      <div class="registration-card" style="margin-top: var(--spacing-md); max-width: 720px;">
+        <h3 id="video-title-display">Safe Patient Lifting & Transfer Technique</h3>
+        <p id="video-desc-display">Proper body mechanics for transferring a bedridden patient without strain injury.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container" style="text-align: center; padding: 2rem 0;">
+      <p>&copy; 2026 <strong>Assisterly Care Network</strong>. All rights reserved.</p>
+      <p style="margin-top: 0.5rem;">Developed by <strong>Varun</strong> (Register No: <strong>23IT721</strong>) | Assignment 1 — Event Handling</p>
+    </div>
+  </footer>
+
+</body>
+</html>

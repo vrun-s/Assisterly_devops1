@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Certification Quiz — Assisterly</title>
+  <meta name="description" content="A timed screening assessment caregivers must pass before their profile goes live on Assisterly.">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="assignment1.css">
+  <script src="quiz.js" defer></script>
+</head>
+
+<body>
+
+  <header>
+    <div class="container">
+      <div class="header-branding">
+        <svg class="header-logo animate-heartbeat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+        </svg>
+        <div class="header-title-area">
+          <h1>Assisterly</h1>
+          <p>Caregiver Certification Quiz <span class="typing-cursor"></span></p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <div class="live-clock-badge" id="live-clock-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          <span id="live-clock">Loading Time...</span>
+        </div>
+        <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle light/dark theme">
+          <svg class="theme-toggle-icon moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+          <svg class="theme-toggle-icon sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+          </svg>
+        </button>
+        <div class="header-student-badge">
+          <span class="student-name">Varun</span>
+          <span class="student-reg">23IT721</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <nav class="subpage-nav">
+      <a href="index.html" class="back-link">&larr; Main Dashboard</a>
+      <div class="assignment-links">
+        <a href="directory.html">Directory</a>
+        <a href="video.html">Care Guide</a>
+        <a href="signup.html">Sign Up</a>
+        <a href="quiz.html" class="current">Certification Quiz</a>
+        <a href="shift-notes.html">Shift Notes</a>
+        <a href="dashboard.html">Shift Dashboard</a>
+      </div>
+    </nav>
+
+    <section id="quiz-intro" class="animate-fade-in-up quiz-shell">
+      <span class="eyebrow">Assignment 1 — Event Handling</span>
+      <h2>Caregiver Certification Quiz</h2>
+      <p style="margin-bottom: var(--spacing-md);">
+        A short screening assessment caregivers must pass before their profile goes live in the directory. You have <strong>60 seconds</strong> once you start.
+      </p>
+
+      <div class="quiz-result-banner" id="quiz-result-banner">
+        <h3 id="quiz-result-title" style="color: var(--color-pine); margin: 0 0 0.5rem;">Result</h3>
+        <p id="quiz-result-detail" style="margin: 0;"></p>
+      </div>
+
+      <div class="quiz-header-bar">
+        <button class="btn btn-submit btn-transition" id="quiz-start-btn">Start Quiz</button>
+        <span class="quiz-timer" id="quiz-timer">--:--</span>
+      </div>
+
+      <form id="quiz-form">
+        <fieldset class="quiz-fieldset" id="quiz-fieldset" disabled>
+          <div class="quiz-question" data-correct="b">
+            <h3>1. What is the first step before repositioning a bedridden patient?</h3>
+            <label class="quiz-option"><input type="radio" name="q1" value="a"> Immediately lift the patient by the arms</label>
+            <label class="quiz-option"><input type="radio" name="q1" value="b"> Explain the process to the patient and check for pain/discomfort</label>
+            <label class="quiz-option"><input type="radio" name="q1" value="c"> Leave the room to get equipment</label>
+          </div>
+
+          <div class="quiz-question" data-correct="a">
+            <h3>2. How often should a bedridden patient typically be repositioned to prevent pressure sores?</h3>
+            <label class="quiz-option"><input type="radio" name="q2" value="a"> Every 2 hours</label>
+            <label class="quiz-option"><input type="radio" name="q2" value="b"> Once per day</label>
+            <label class="quiz-option"><input type="radio" name="q2" value="c"> Only when requested</label>
+          </div>
+
+          <div class="quiz-question" data-correct="c">
+            <h3>3. Before administering any medication, a caregiver should always:</h3>
+            <label class="quiz-option"><input type="radio" name="q3" value="a"> Guess the dosage based on patient weight</label>
+            <label class="quiz-option"><input type="radio" name="q3" value="b"> Skip checking the label if in a hurry</label>
+            <label class="quiz-option"><input type="radio" name="q3" value="c"> Verify the medication, dose, and time against the care plan</label>
+          </div>
+
+          <div class="quiz-question" data-correct="b">
+            <h3>4. What should you do first if a client shows signs of a medical emergency?</h3>
+            <label class="quiz-option"><input type="radio" name="q4" value="a"> Continue the scheduled task</label>
+            <label class="quiz-option"><input type="radio" name="q4" value="b"> Call emergency services and notify the family/agency</label>
+            <label class="quiz-option"><input type="radio" name="q4" value="c"> Wait until the next shift handover</label>
+          </div>
+
+          <div class="form-actions" style="grid-column: unset; justify-content: flex-start;">
+            <button type="submit" class="btn btn-submit btn-transition" id="quiz-submit-btn">Submit Quiz</button>
+          </div>
+        </fieldset>
+      </form>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container" style="text-align: center; padding: 2rem 0;">
+      <p>&copy; 2026 <strong>Assisterly Care Network</strong>. All rights reserved.</p>
+      <p style="margin-top: 0.5rem;">Developed by <strong>Varun</strong> (Register No: <strong>23IT721</strong>) | Assignment 1 — Event Handling</p>
+    </div>
+  </footer>
+
+</body>
+</html>

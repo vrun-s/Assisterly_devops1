@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up — Assisterly</title>
+  <meta name="description" content="Create an Assisterly account as a caregiver or a care-seeking family.">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="assignment1.css">
+  <script src="signup.js" defer></script>
+</head>
+
+<body>
+
+  <header>
+    <div class="container">
+      <div class="header-branding">
+        <svg class="header-logo animate-heartbeat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+        </svg>
+        <div class="header-title-area">
+          <h1>Assisterly</h1>
+          <p>Create Your Account <span class="typing-cursor"></span></p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <div class="live-clock-badge" id="live-clock-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          <span id="live-clock">Loading Time...</span>
+        </div>
+        <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle light/dark theme">
+          <svg class="theme-toggle-icon moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+          <svg class="theme-toggle-icon sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+          </svg>
+        </button>
+        <div class="header-student-badge">
+          <span class="student-name">Varun</span>
+          <span class="student-reg">23IT721</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <nav class="subpage-nav">
+      <a href="index.html" class="back-link">&larr; Main Dashboard</a>
+      <div class="assignment-links">
+        <a href="directory.html">Directory</a>
+        <a href="video.html">Care Guide</a>
+        <a href="signup.html" class="current">Sign Up</a>
+        <a href="quiz.html">Certification Quiz</a>
+        <a href="shift-notes.html">Shift Notes</a>
+        <a href="dashboard.html">Shift Dashboard</a>
+      </div>
+    </nav>
+
+    <section id="signup-intro" class="animate-fade-in-up">
+      <span class="eyebrow">Assignment 1 — Event Handling</span>
+      <h2>Create Your Assisterly Account</h2>
+
+      <div class="signup-success-banner" id="signup-success-banner">
+        <div style="font-size: 2.5rem; color: var(--color-sage); line-height: 1;">&#10003;</div>
+        <h3 style="color: var(--color-pine); margin: 0.5rem 0;">Account Created!</h3>
+        <p style="margin: 0;">Welcome to Assisterly, <span id="signup-success-name">there</span>. You can now sign in and complete your profile.</p>
+      </div>
+
+      <form id="signup-form" class="registration-card signup-form-wrapper" novalidate>
+        <div class="form-group">
+          <label for="su-name">Full Name</label>
+          <input type="text" id="su-name" name="name" placeholder="e.g. Varun Kumar" autocomplete="name">
+          <span class="error-message"></span>
+        </div>
+
+        <div class="form-group">
+          <label for="su-email">Email Address</label>
+          <input type="email" id="su-email" name="email" placeholder="you@example.com" autocomplete="email">
+          <span class="error-message"></span>
+        </div>
+
+        <div class="form-group">
+          <label for="su-care-type">Care Type</label>
+          <select id="su-care-type" name="careType">
+            <option value="">Select the care you need or provide...</option>
+            <option value="Elderly Care">Elderly Care</option>
+            <option value="Child Care">Child Care</option>
+            <option value="Post-Surgery Care">Post-Surgery Care</option>
+            <option value="Special Needs">Special Needs</option>
+            <option value="Companion Care">Companion Care</option>
+          </select>
+          <span class="error-message"></span>
+        </div>
+
+        <div class="form-group">
+          <label for="su-password">Password</label>
+          <input type="password" id="su-password" name="password" placeholder="At least 8 characters" autocomplete="new-password">
+          <span class="password-strength-hint">Minimum 8 characters, with at least one number.</span>
+          <span class="error-message"></span>
+        </div>
+
+        <div class="form-group">
+          <label for="su-confirm-password">Confirm Password</label>
+          <input type="password" id="su-confirm-password" name="confirmPassword" placeholder="Re-enter your password" autocomplete="new-password">
+          <span class="confirm-match-hint" id="confirm-match-hint"></span>
+          <span class="error-message"></span>
+        </div>
+
+        <div class="form-actions" style="grid-column: unset; justify-content: flex-start;">
+          <button type="submit" class="btn btn-submit btn-transition">Create Account</button>
+          <button type="reset" class="btn btn-reset btn-transition">Clear</button>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container" style="text-align: center; padding: 2rem 0;">
+      <p>&copy; 2026 <strong>Assisterly Care Network</strong>. All rights reserved.</p>
+      <p style="margin-top: 0.5rem;">Developed by <strong>Varun</strong> (Register No: <strong>23IT721</strong>) | Assignment 1 — Event Handling</p>
+    </div>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Assisterly — Caregiver Scheduler & Storage Portal</title>
+  <meta name="description"
+    content="A clinical-precision scheduler prototype for Assisterly demonstrating HTML5 Drag and Drop APIs and Web Storage.">
+  <link rel="stylesheet" href="planner.css">
+  <script src="planner.js" defer></script>
+</head>
+
+<body>
+
+  <!-- Header Section (S.No 2) -->
+  <header>
+    <div class="container">
+      <div class="header-branding">
+        <!-- SVG Heartbeat/Pulse Logo (Animated) -->
+        <svg class="header-logo animate-heartbeat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+        </svg>
+        <div class="header-title-area">
+          <h1>Assisterly Planner</h1>
+          <p>Interactive Shift Coordinator & Web Storage Portal <span class="typing-cursor"></span></p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <!-- Live Clock Display -->
+        <div class="live-clock-badge" id="live-clock-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          <span id="live-clock">Loading Time...</span>
+        </div>
+        <!-- Theme Toggle Switch -->
+        <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle light/dark theme">
+          <svg class="theme-toggle-icon moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+          <svg class="theme-toggle-icon sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </button>
+        <!-- Student Identity Badge -->
+        <div class="header-student-badge">
+          <span class="student-name">Varun</span>
+          <span class="student-reg">2303717620521057</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation Menu (S.No 3) -->
+  <nav>
+    <div class="nav-container">
+      <ul class="nav-links">
+        <li><a href="index.html" style="color: var(--color-terracotta); font-weight: 700;">← Main Dashboard</a></li>
+        <li><a href="#home">Home</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#features">Features</a></li>
+        <li><a href="#storage">Storage</a></li>
+        <li><a href="#contact">Contact</a></li>
+        <li><a href="#help">Help</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Notification Toasts Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Main Work Area (S.No 13) -->
+  <main class="container">
+
+    <!-- 1. Home Section: Introduction (S.No 4 & 13) -->
+    <section id="home" class="animate-fade-in-up">
+      <div class="welcome-grid">
+        <article class="welcome-intro">
+          <span class="eyebrow font-mono">Assignment 4 Overview</span>
+          <h2>Dignified Care Coordination, Powered by HTML5 APIs</h2>
+          <p>
+            Welcome to the <strong>Assisterly Shift Planning Console</strong>. This webpage showcases two powerful 
+            client-side HTML5 technologies: the <strong>Drag &amp; Drop API</strong> for interactive caregiver allocation, 
+            and <strong>Web Storage</strong> (both persistent <code>localStorage</code> and transient <code>sessionStorage</code>) 
+            for local audit logging.
+          </p>
+          <p>
+            Using the visual widgets below, coordinators can assign caregiver profiles directly to schedule shifts via 
+            intuitive dragging gestures. Additionally, coordinators can register session-specific and long-term diagnostic 
+            variables to inspect read/write serialization in real-time.
+          </p>
+        </article>
+        
+        <aside class="welcome-aside hover-lift">
+          <h3>Quick Links</h3>
+          <p>Use the controls on this page to demonstrate:</p>
+          <ul class="demo-bullets">
+            <li><strong>Drag &amp; Drop</strong>: Match caregivers to shifts.</li>
+            <li><strong>Local Storage</strong>: Retain coordinator profiles after page refresh.</li>
+            <li><strong>Session Storage</strong>: Log temporary session notes that clear when the tab closes.</li>
+            <li><strong>State Inspector</strong>: Audit stored variables in real-time.</li>
+          </ul>
+        </aside>
+      </div>
+    </section>
+
+    <!-- Pulse Divider -->
+    <div class="pulse-divider-container">
+      <svg class="pulse-line" viewBox="0 0 100 10" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0,5 L40,5 L43,2 L45,8 L48,1 L50,9 L52,4 L55,5 L100,5" fill="none" stroke="var(--color-sage)" stroke-width="0.5" />
+      </svg>
+    </div>
+
+    <!-- 2. About Section: Technical Overview (S.No 13) -->
+    <section id="about" class="animate-fade-in-up">
+      <div class="about-grid">
+        <article class="about-content">
+          <span class="eyebrow font-mono">Technical Specifications</span>
+          <h2>HTML5 APIs Explained</h2>
+          <div class="api-card-grid">
+            <div class="api-info-card">
+              <div class="api-icon-wrap">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M15 3h6v6"></path>
+                  <path d="M9 21H3v-6"></path>
+                  <path d="M21 3l-7 7"></path>
+                  <path d="M3 21l7-7"></path>
+                </svg>
+              </div>
+              <h4>Drag &amp; Drop API</h4>
+              <p>Provides native browser drag support. Handled via <code>dragstart</code>, <code>dragover</code>, <code>dragleave</code>, and <code>drop</code> events, allowing complex object mapping without large external JS libraries.</p>
+            </div>
+            
+            <div class="api-info-card">
+              <div class="api-icon-wrap">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                </svg>
+              </div>
+              <h4>Local Storage API</h4>
+              <p>Saves key-value pairs persistently in the user's browser with no expiration date. Ideal for user profiles, theme toggles, and permanent app preferences.</p>
+            </div>
+            
+            <div class="api-info-card">
+              <div class="api-icon-wrap">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                  <line x1="16" y1="2" x2="16" y2="6"></line>
+                  <line x1="8" y1="2" x2="8" y2="6"></line>
+                  <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+              </div>
+              <h4>Session Storage API</h4>
+              <p>Saves data temporarily for a single browser tab session. The data is destroyed immediately when the tab is closed, ensuring security for transient operational variables.</p>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Pulse Divider -->
+    <div class="pulse-divider-container">
+      <svg class="pulse-line" viewBox="0 0 100 10" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0,5 L40,5 L43,2 L45,8 L48,1 L50,9 L52,4 L55,5 L100,5" fill="none" stroke="var(--color-sage)" stroke-width="0.5" />
+      </svg>
+    </div>
+
+    <!-- 3. Features Section: Drag and Drop Demo (S.No 5, 6, 7 & 13) -->
+    <section id="features" class="animate-fade-in-up">
+      <span class="eyebrow font-mono">Module 1 — Interactive Allocation</span>
+      <h2 class="section-title">Caregiver Shift Planner</h2>
+      <p class="section-desc">Drag a caregiver badge from the deck below and drop them directly onto a shift schedule block. This matches care requirements with expert providers dynamically.</p>
+
+      <div class="planner-layout">
+        <!-- Drag Source: Draggable Cards Deck (S.No 5) -->
+        <div class="caregivers-deck-container">
+          <h3>Available Caregivers</h3>
+          <p class="deck-subtitle">Draggable providers deck:</p>
+          <div class="caregivers-deck" id="caregivers-deck">
+            
+            <!-- Draggable Caregiver 1 -->
+            <div class="caregiver-card" draggable="true" id="cg-001" data-name="Sarah Jenkins" data-specialty="Dementia Care" data-rating="5">
+              <div class="caregiver-avatar">
+                <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="18" cy="18" r="18" fill="var(--color-sand)" />
+                  <!-- Human icon representation -->
+                  <path d="M18 20c-4.42 0-8 2.24-8 5v2h16v-2c0-2.76-3.58-5-8-5z" fill="var(--color-pine)" />
+                  <circle cx="18" cy="13" r="4.5" fill="var(--color-pine)" />
+                  <circle cx="18" cy="13" r="1.5" fill="var(--color-terracotta)" />
+                </svg>
+              </div>
+              <div class="caregiver-info">
+                <span class="cg-badge-id">CG-001</span>
+                <h4>Sarah Jenkins</h4>
+                <p class="cg-specialty">Dementia Care</p>
+                <div class="cg-rating">★★★★★ <span class="rating-val">(5.0)</span></div>
+              </div>
+              <div class="drag-handle-indicator">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <circle cx="9" cy="5" r="1"></circle><circle cx="9" cy="12" r="1"></circle><circle cx="9" cy="19" r="1"></circle>
+                  <circle cx="15" cy="5" r="1"></circle><circle cx="15" cy="12" r="1"></circle><circle cx="15" cy="19" r="1"></circle>
+                </svg>
+              </div>
+            </div>
+
+            <!-- Draggable Caregiver 2 -->
+            <div class="caregiver-card" draggable="true" id="cg-002" data-name="David Miller" data-specialty="Physical Rehab" data-rating="4">
+              <div class="caregiver-avatar">
+                <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="18" cy="18" r="18" fill="#EAE2D8" />
+                  <path d="M18 20c-4.42 0-8 2.24-8 5v2h16v-2c0-2.76-3.58-5-8-5z" fill="var(--color-pine)" />
+                  <circle cx="18" cy="13" r="4.5" fill="var(--color-pine)" />
+                  <circle cx="18" cy="13" r="1.5" fill="var(--color-sage)" />
+                </svg>
+              </div>
+              <div class="caregiver-info">
+                <span class="cg-badge-id">CG-002</span>
+                <h4>David Miller</h4>
+                <p class="cg-specialty">Physical Rehab</p>
+                <div class="cg-rating">★★★★☆ <span class="rating-val">(4.2)</span></div>
+              </div>
+              <div class="drag-handle-indicator">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <circle cx="9" cy="5" r="1"></circle><circle cx="9" cy="12" r="1"></circle><circle cx="9" cy="19" r="1"></circle>
+                  <circle cx="15" cy="5" r="1"></circle><circle cx="15" cy="12" r="1"></circle><circle cx="15" cy="19" r="1"></circle>
+                </svg>
+              </div>
+            </div>
+
+            <!-- Draggable Caregiver 3 -->
+            <div class="caregiver-card" draggable="true" id="cg-003" data-name="Elena Rostova" data-specialty="Geriatric Care" data-rating="5">
+              <div class="caregiver-avatar">
+                <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="18" cy="18" r="18" fill="var(--color-sand)" />
+                  <path d="M18 20c-4.42 0-8 2.24-8 5v2h16v-2c0-2.76-3.58-5-8-5z" fill="var(--color-pine)" />
+                  <circle cx="18" cy="13" r="4.5" fill="var(--color-pine)" />
+                  <circle cx="18" cy="13" r="1.5" fill="var(--color-terracotta)" />
+                </svg>
+              </div>
+              <div class="caregiver-info">
+                <span class="cg-badge-id">CG-003</span>
+                <h4>Elena Rostova</h4>
+                <p class="cg-specialty">Geriatric Care</p>
+                <div class="cg-rating">★★★★★ <span class="rating-val">(4.9)</span></div>
+              </div>
+              <div class="drag-handle-indicator">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <circle cx="9" cy="5" r="1"></circle><circle cx="9" cy="12" r="1"></circle><circle cx="9" cy="19" r="1"></circle>
+                  <circle cx="15" cy="5" r="1"></circle><circle cx="15" cy="12" r="1"></circle><circle cx="15" cy="19" r="1"></circle>
+                </svg>
+              </div>
+            </div>
+
+          </div>
+          <div class="trash-zone" id="trash-zone">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="3 6 5 6 21 6"></polyline>
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+              <line x1="10" y1="11" x2="10" y2="17"></line>
+              <line x1="14" y1="11" x2="14" y2="17"></line>
+            </svg>
+            <span>Drag here to unassign caregiver</span>
+          </div>
+        </div>
+
+        <!-- Drop Target: Shift Slots (S.No 6 & 7) -->
+        <div class="shifts-slots-container">
+          <h3>Active Allocation Grid</h3>
+          <p class="deck-subtitle">Drop targets for caregivers:</p>
+          <div class="shifts-grid">
+            
+            <!-- Shift 1: Morning -->
+            <div class="shift-slot" id="shift-morning" data-shift="Morning Shift">
+              <div class="shift-header">
+                <span class="shift-icon">🌅</span>
+                <div>
+                  <h4>Morning Shift</h4>
+                  <span class="shift-time font-mono">06:00 AM - 02:00 PM</span>
+                </div>
+              </div>
+              <div class="drop-zone" id="dz-morning">
+                <div class="drop-placeholder">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                  </svg>
+                  <p>Drag Caregiver Here</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Shift 2: Afternoon -->
+            <div class="shift-slot" id="shift-afternoon" data-shift="Afternoon Shift">
+              <div class="shift-header">
+                <span class="shift-icon">☀️</span>
+                <div>
+                  <h4>Afternoon Shift</h4>
+                  <span class="shift-time font-mono">02:00 PM - 10:00 PM</span>
+                </div>
+              </div>
+              <div class="drop-zone" id="dz-afternoon">
+                <div class="drop-placeholder">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                  </svg>
+                  <p>Drag Caregiver Here</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Shift 3: Night -->
+            <div class="shift-slot" id="shift-night" data-shift="Night Shift">
+              <div class="shift-header">
+                <span class="shift-icon">🌙</span>
+                <div>
+                  <h4>Night Shift</h4>
+                  <span class="shift-time font-mono">10:00 PM - 06:00 AM</span>
+                </div>
+              </div>
+              <div class="drop-zone" id="dz-night">
+                <div class="drop-placeholder">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                  </svg>
+                  <p>Drag Caregiver Here</p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pulse Divider -->
+    <div class="pulse-divider-container">
+      <svg class="pulse-line" viewBox="0 0 100 10" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0,5 L40,5 L43,2 L45,8 L48,1 L50,9 L52,4 L55,5 L100,5" fill="none" stroke="var(--color-sage)" stroke-width="0.5" />
+      </svg>
+    </div>
+
+    <!-- 4. Storage Section: Web Storage Form & Controls (S.No 8, 9, 10, 11 & 13) -->
+    <section id="storage" class="animate-fade-in-up">
+      <span class="eyebrow font-mono">Module 2 — Data Logging</span>
+      <h2 class="section-title">Coordinator Storage Console</h2>
+      <p class="section-desc">Manage system metadata. Record permanent profiles via Local Storage and temporary operational variables via Session Storage.</p>
+
+      <div class="storage-layout">
+        <!-- Forms area -->
+        <div class="storage-forms-container">
+          
+          <form id="storage-form" onsubmit="return false;">
+            
+            <!-- Local Storage Fields (S.No 8) -->
+            <div class="form-group-box">
+              <span class="storage-type-badge local">Local Storage (Permanent)</span>
+              <h3>Permanent Coordinator Profile</h3>
+              <p class="field-desc">These variables will persist in the browser indefinitely until cleared manually.</p>
+              
+              <div class="form-grid">
+                <div class="form-field">
+                  <label for="coord-name">Coordinator Full Name *</label>
+                  <input type="text" id="coord-name" placeholder="e.g. Varun Kumar" required>
+                </div>
+                <div class="form-field">
+                  <label for="coord-dept">Department Group</label>
+                  <select id="coord-dept">
+                    <option value="Information Technology">Information Technology</option>
+                    <option value="Critical Emergency Care">Critical Emergency Care</option>
+                    <option value="Clinical Audit Operations">Clinical Audit Operations</option>
+                    <option value="Family Coordination">Family Coordination</option>
+                  </select>
+                </div>
+                <div class="form-field">
+                  <label for="coord-pin">Emergency Contact PIN *</label>
+                  <input type="password" id="coord-pin" placeholder="e.g. 23721" required>
+                </div>
+              </div>
+            </div>
+
+            <!-- Session Storage Fields (S.No 9) -->
+            <div class="form-group-box">
+              <span class="storage-type-badge session">Session Storage (Temporary)</span>
+              <h3>Temporary Operational Logs</h3>
+              <p class="field-desc">These variables are kept during this tab session only, and cleared when the window is closed.</p>
+              
+              <div class="form-field">
+                <label for="session-notes">Shift Dispatch Notes</label>
+                <textarea id="session-notes" rows="3" placeholder="e.g. Patient Henderson requires critical dementia watch in Room 101 today. Keep back-up staff notified."></textarea>
+              </div>
+            </div>
+
+            <!-- Buttons bar (S.No 10 & 11) -->
+            <div class="form-actions-bar">
+              <button type="button" id="btn-save" class="btn btn-primary hover-lift">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="btn-icon">
+                  <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                  <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                  <polyline points="7 3 7 8 15 8"></polyline>
+                </svg>
+                Save Data
+              </button>
+              
+              <button type="button" id="btn-retrieve" class="btn btn-secondary hover-lift">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="btn-icon">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+                Retrieve Data
+              </button>
+              
+              <button type="button" id="btn-clear" class="btn btn-danger hover-lift">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="btn-icon">
+                  <polyline points="3 6 5 6 21 6"></polyline>
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                </svg>
+                Clear All Data
+              </button>
+            </div>
+
+          </form>
+
+        </div>
+
+        <!-- Output display / console area (S.No 10) -->
+        <div class="storage-console-container">
+          <div class="console-header">
+            <h3>Storage Retrieval Center</h3>
+            <span class="console-status-pulse"></span>
+          </div>
+          <div class="console-body" id="console-display">
+            <div class="console-empty-state">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+                <polyline points="10 9 9 9 8 9"></polyline>
+              </svg>
+              <p>No storage query requested yet.</p>
+              <p class="console-sub-empty">Click the <strong>Retrieve Data</strong> button to view stored variables in the browser cache.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Pulse Divider -->
+    <div class="pulse-divider-container">
+      <svg class="pulse-line" viewBox="0 0 100 10" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0,5 L40,5 L43,2 L45,8 L48,1 L50,9 L52,4 L55,5 L100,5" fill="none" stroke="var(--color-sage)" stroke-width="0.5" />
+      </svg>
+    </div>
+
+    <!-- 5. Interactive Help Section: Instruction & FAQ (S.No 13) -->
+    <section id="help" class="animate-fade-in-up">
+      <span class="eyebrow font-mono">Operations Manual</span>
+      <h2 class="section-title">Frequently Asked Questions &amp; Support</h2>
+      <p class="section-desc">Interactive instructions on client-side data allocation and memory management.</p>
+      
+      <div class="help-grid">
+        <div class="faq-container">
+          
+          <div class="faq-item">
+            <button class="faq-trigger">
+              <span>How do I assign caregivers using Drag and Drop?</span>
+              <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-content">
+              <p>Simply click and hold down on any of the colored Caregiver cards under the "Available Caregivers" deck. Drag the card towards the Morning, Afternoon, or Night shift boxes. You will see the target boxes highlight with a dashed border. Release the click while hovering over the target box to drop it inside. The slot will automatically save this caregiver assignment.</p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-trigger">
+              <span>How do I remove an assigned caregiver from a shift?</span>
+              <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-content">
+              <p>You can drag the caregiver card out of its shift box and drop it into the "Trash Zone" (the red box located at the bottom-left of the scheduler) to unassign it. The card will be restored to the available caregivers list and removed from browser storage.</p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-trigger">
+              <span>What is the difference between Local and Session storage here?</span>
+              <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-content">
+              <p><strong>Local Storage:</strong> Stores your Coordinator Profile (Name, Dept, and PIN) permanently. If you refresh the page or close your browser, the data remains.</p>
+              <p><strong>Session Storage:</strong> Stores the temporary "Shift Dispatch Notes". These notes survive basic page refreshes, but are completely wiped once you close the browser tab, keeping temporary hand-over notes secure.</p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-trigger">
+              <span>How do I verify the stored information?</span>
+              <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-content">
+              <p>Type values into the form fields, assign a caregiver to a shift, and click "Save Data". Then, click the "Retrieve Data" button. The diagnostic display console will query the browser's APIs and render a table showing the stored information. You can also view this in browser Developer Tools under the Application tab.</p>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="help-aside-card">
+          <h4>Web Storage Status Panel</h4>
+          <p>Real-time visual monitoring of local browser storage usage:</p>
+          
+          <div class="storage-gauge-area">
+            <div class="gauge-label">
+              <span>Local Storage:</span>
+              <span id="local-size-val" class="font-mono">0 Bytes</span>
+            </div>
+            <div class="gauge-bar-bg">
+              <div id="local-gauge-fill" class="gauge-bar-fill local" style="width: 0%;"></div>
+            </div>
+          </div>
+
+          <div class="storage-gauge-area">
+            <div class="gauge-label">
+              <span>Session Storage:</span>
+              <span id="session-size-val" class="font-mono">0 Bytes</span>
+            </div>
+            <div class="gauge-bar-bg">
+              <div id="session-gauge-fill" class="gauge-bar-fill session" style="width: 0%;"></div>
+            </div>
+          </div>
+
+          <div class="alert-status-box">
+            <div class="pulse-indicator-small green"></div>
+            <span>System Cache Connected and Monitoring.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. Aside Sidebar Widget (S.No 13) -->
+    <!-- Placing a floating diagnostics aside widget inside the main layout for maximum aesthetic appeal -->
+    <aside class="floating-diagnostic-aside" id="diagnostic-aside">
+      <div class="diagnostic-header">
+        <h5>⚙️ Diagnostic Panel</h5>
+        <button id="close-diag" aria-label="Minimize diagnostics">&times;</button>
+      </div>
+      <div class="diagnostic-body font-mono">
+        <p><strong>Last Drag Event:</strong> <span id="diag-last-event">none</span></p>
+        <p><strong>Active Drag Item:</strong> <span id="diag-drag-item">none</span></p>
+        <p><strong>Local Keys count:</strong> <span id="diag-local-count">0</span></p>
+        <p><strong>Session Keys count:</strong> <span id="diag-session-count">0</span></p>
+      </div>
+    </aside>
+
+  </main>
+
+  <!-- 7. Footer Section (S.No 12 & 13) -->
+  <footer>
+    <div class="footer-container">
+      <div class="footer-branding">
+        <div class="footer-logo-wrap">
+          <svg class="footer-logo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+          </svg>
+        </div>
+        <div>
+          <h3>Assisterly Coordinator Portal</h3>
+          <p>Connecting families with certified, verified home caregivers.</p>
+        </div>
+      </div>
+      
+      <div class="footer-student-meta">
+        <span class="eyebrow">Academic Submission</span>
+        <p class="student-name-badge"><strong>Student Name:</strong> Varun</p>
+        <p><strong>Register Number:</strong> 2303717620521057</p>
+        <p><strong>Institution:</strong> Coimbatore Institute of Technology</p>
+        <p><strong>Department:</strong> Department of Information Technology</p>
+      </div>
+
+      <div class="footer-contacts">
+        <span class="eyebrow">Contact Details</span>
+        <a href="mailto:71762307057@cit.edu.in" class="footer-email">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="footer-icon">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+            <polyline points="22,6 12,13 2,6"></polyline>
+          </svg>
+          71762307057@cit.edu.in
+        </a>
+        <p class="footer-phone">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="footer-icon">
+            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+          </svg>
+          +91 94872 23721
+        </p>
+      </div>
+    </div>
+    
+    <div class="footer-bottom">
+      <p>&copy; 2026 Assisterly Inc. All rights reserved. Submissions in compliance with Course Outcome CO-2303717620521057.</p>
+    </div>
+  </footer>
+
+</body>
+</html>

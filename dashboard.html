@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shift Dashboard — Assisterly</title>
+  <meta name="description" content="Caregiver/family dashboard showing scheduled shifts and per-shift task completion.">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="assignment1.css">
+  <script src="dashboard.js" defer></script>
+</head>
+
+<body>
+
+  <header>
+    <div class="container">
+      <div class="header-branding">
+        <svg class="header-logo animate-heartbeat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+        </svg>
+        <div class="header-title-area">
+          <h1>Assisterly</h1>
+          <p>Caregiver / Family Shift Dashboard <span class="typing-cursor"></span></p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <div class="live-clock-badge" id="live-clock-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          <span id="live-clock">Loading Time...</span>
+        </div>
+        <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle light/dark theme">
+          <svg class="theme-toggle-icon moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+          <svg class="theme-toggle-icon sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+          </svg>
+        </button>
+        <div class="header-student-badge">
+          <span class="student-name">Varun</span>
+          <span class="student-reg">23IT721</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <nav class="subpage-nav">
+      <a href="index.html" class="back-link">&larr; Main Dashboard</a>
+      <div class="assignment-links">
+        <a href="directory.html">Directory</a>
+        <a href="video.html">Care Guide</a>
+        <a href="signup.html">Sign Up</a>
+        <a href="quiz.html">Certification Quiz</a>
+        <a href="shift-notes.html">Shift Notes</a>
+        <a href="dashboard.html" class="current">Shift Dashboard</a>
+      </div>
+    </nav>
+
+    <section id="shift-dashboard-intro" class="animate-fade-in-up">
+      <span class="eyebrow">Assignment 1 — Event Handling</span>
+      <h2>Scheduled Shifts & Task Completion</h2>
+      <p style="margin-bottom: var(--spacing-md);">
+        Click a shift card to expand its task checklist. Hover the progress bar for the exact completion percentage. Checking off a task recalculates the shift's overall progress.
+      </p>
+
+      <div class="shift-list" id="shift-list">
+        <!-- Shift cards injected by dashboard.js -->
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container" style="text-align: center; padding: 2rem 0;">
+      <p>&copy; 2026 <strong>Assisterly Care Network</strong>. All rights reserved.</p>
+      <p style="margin-top: 0.5rem;">Developed by <strong>Varun</strong> (Register No: <strong>23IT721</strong>) | Assignment 1 — Event Handling</p>
+    </div>
+  </footer>
+
+</body>
+</html>

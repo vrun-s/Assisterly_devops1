@@ -1,0 +1,95 @@
+---
+# ==============================================================================
+# Assisterly Caregiver Platform — Ansible Deployment Playbook
+# Provisions persistent storage, deploys the Docker container, and verifies health.
+# ==============================================================================
+
+- name: Deploy Assisterly Application
+  hosts: all
+  become: false
+  gather_facts: true
+
+  vars:
+    app_name: assisterly
+    app_image: "assisterly:latest"
+    container_name: "assisterly-app"
+    app_port: 5000
+    persistent_volume: "assisterly_data"
+    health_check_url: "http://localhost:{{ app_port }}/api/health"
+    repo_dir: "{{ playbook_dir }}/.."
+
+  tasks:
+    - name: Display deployment configuration
+      ansible.builtin.debug:
+        msg: >
+          Deploying {{ app_name }} (image: {{ app_image }}, port: {{ app_port }})
+          target: {{ inventory_hostname }}
+
+    - name: Verify Docker CLI is available
+      ansible.builtin.command: docker --version
+      register: docker_check
+      changed_when: false
+      failed_when: docker_check.rc != 0
+
+    - name: Ensure persistent Docker volume exists
+      ansible.builtin.command: "docker volume create {{ persistent_volume }}"
+      register: volume_create
+      changed_when: "'Created' in volume_create.stdout"
+
+    - name: Build Docker image from repository context
+      ansible.builtin.command:
+        cmd: "docker build -t {{ app_image }} ."
+        chdir: "{{ repo_dir }}"
+      register: docker_build
+      changed_when: "'Successfully tagged' in docker_build.stdout or 'naming to' in docker_build.stdout"
+
+    - name: Check if container is already running with matching configuration
+      ansible.builtin.command:
+        cmd: "docker inspect --format='{{ '{{' }} .State.Running {{ '}}' }}' {{ container_name }}"
+      register: container_inspect
+      failed_when: false
+      changed_when: false
+
+    - name: Stop and remove existing container if rebuilding/updating
+      ansible.builtin.command:
+        cmd: "docker rm -f {{ container_name }}"
+      when: container_inspect.rc == 0
+      register: container_remove
+      changed_when: container_remove.rc == 0
+
+    - name: Run Assisterly container with persistent SQLite volume
+      ansible.builtin.command:
+        cmd: >
+          docker run -d
+          --name {{ container_name }}
+          -p {{ app_port }}:5000
+          -v {{ persistent_volume }}:/app/data
+          -e PORT=5000
+          -e HOST=0.0.0.0
+          -e DATABASE_PATH=/app/data/assisterly.db
+          -e FLASK_ENV=production
+          --restart unless-stopped
+          {{ app_image }}
+      register: docker_run
+      changed_when: docker_run.rc == 0
+
+    - name: Wait for application health endpoint to respond
+      ansible.builtin.uri:
+        url: "{{ health_check_url }}"
+        method: GET
+        status_code: 200
+        return_content: true
+      register: health_response
+      until: health_response.status == 200
+      retries: 10
+      delay: 3
+
+    - name: Output deployment confirmation and metrics
+      ansible.builtin.debug:
+        msg:
+          - "Deployment successful!"
+          - "Status: {{ health_response.json.status }}"
+          - "Database: {{ health_response.json.database }}"
+          - "Active Caregivers: {{ health_response.json.caregivers_count }}"
+          - "Scheduled Shifts: {{ health_response.json.shifts_count }}"
+          - "Application is accessible at: http://localhost:{{ app_port }}/"

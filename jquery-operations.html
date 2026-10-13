@@ -1,0 +1,1491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Assisterly — Web Page Content Operations with jQuery Selectors</title>
+  
+  <!-- Modern Typography from Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- jQuery 3.7.1 Library -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+  <style>
+    /* ==========================================================================
+       CSS Variables & Design Tokens (Light & Dark Theme)
+       ========================================================================== */
+    :root {
+      --font-body: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      --font-heading: 'Outfit', sans-serif;
+      --font-mono: 'Fira Code', monospace;
+
+      /* Light Theme Colors */
+      --bg-base: #f4f8f6;
+      --bg-gradient: radial-gradient(circle at 10% 20%, #f7faf9 0%, #eaf4f0 90%);
+      --bg-surface: #ffffff;
+      --bg-surface-elevated: #ffffff;
+      --bg-glass: rgba(255, 255, 255, 0.88);
+      --border-color: #d7e6e0;
+      --border-focus: #0f766e;
+
+      --text-main: #0d2821;
+      --text-muted: #4e6b63;
+      --text-light: #79958d;
+
+      --primary: #0f766e;
+      --primary-light: #14b8a6;
+      --primary-glow: rgba(15, 118, 110, 0.18);
+      
+      --accent: #d97706;
+      --accent-coral: #e11d48;
+      --accent-purple: #7c3aed;
+
+      --card-shadow: 0 10px 25px -5px rgba(13, 40, 33, 0.07), 0 8px 10px -6px rgba(13, 40, 33, 0.04);
+      --card-shadow-hover: 0 20px 35px -10px rgba(15, 118, 110, 0.2);
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --radius-full: 9999px;
+    }
+
+    [data-theme="dark"] {
+      --bg-base: #091512;
+      --bg-gradient: radial-gradient(circle at 15% 15%, #0f2420 0%, #07100e 100%);
+      --bg-surface: #102621;
+      --bg-surface-elevated: #16332c;
+      --bg-glass: rgba(16, 38, 33, 0.88);
+      --border-color: #1e453c;
+      --border-focus: #2dd4bf;
+
+      --text-main: #e8f5f1;
+      --text-muted: #9ab4ac;
+      --text-light: #65857b;
+
+      --primary: #2dd4bf;
+      --primary-light: #5eead4;
+      --primary-glow: rgba(45, 212, 191, 0.22);
+      
+      --accent: #f59e0b;
+      --accent-coral: #fb7185;
+      --accent-purple: #a78bfa;
+
+      --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      --card-shadow-hover: 0 20px 40px rgba(45, 212, 191, 0.2);
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--bg-gradient);
+      color: var(--text-main);
+      min-height: 100vh;
+      line-height: 1.6;
+      padding-bottom: 5rem;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    /* ==========================================================================
+       Header & Navigation (Requirement 1: Title & Header)
+       ========================================================================== */
+    .app-header {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: var(--bg-glass);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border-color);
+      padding: 1rem 2rem;
+    }
+
+    .header-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 0.9rem;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .brand-logo {
+      width: 46px;
+      height: 46px;
+      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.35rem;
+      box-shadow: 0 4px 14px var(--primary-glow);
+    }
+
+    .brand-title h1 {
+      font-family: var(--font-heading);
+      font-size: 1.3rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+
+    .brand-title p {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .header-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-color);
+      padding: 0.4rem 0.8rem;
+      border-radius: var(--radius-full);
+      font-size: 0.8rem;
+      font-family: var(--font-mono);
+      font-weight: 600;
+      color: var(--primary);
+    }
+
+    .nav-btn {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.88rem;
+      font-weight: 600;
+      padding: 0.5rem 0.9rem;
+      border-radius: var(--radius-sm);
+      transition: all 0.2s;
+    }
+    .nav-btn:hover {
+      color: var(--primary);
+      background: var(--primary-glow);
+    }
+
+    .theme-toggle-btn {
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 0.5rem 0.9rem;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      font-size: 0.9rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+    .theme-toggle-btn:hover {
+      border-color: var(--primary);
+    }
+
+    /* ==========================================================================
+       Main Container & Hero
+       ========================================================================== */
+    .container {
+      max-width: 1400px;
+      margin: 2rem auto;
+      padding: 0 1.5rem;
+    }
+
+    .hero-banner {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 2.25rem;
+      margin-bottom: 2.5rem;
+      box-shadow: var(--card-shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-banner::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary), var(--accent), var(--accent-coral));
+    }
+
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: var(--primary-glow);
+      color: var(--primary);
+      padding: 0.3rem 0.85rem;
+      border-radius: var(--radius-full);
+      font-size: 0.8rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+      border: 1px solid rgba(15, 118, 110, 0.25);
+    }
+
+    .hero-title {
+      font-family: var(--font-heading);
+      font-size: 2.25rem;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      margin-bottom: 0.5rem;
+    }
+
+    .hero-title span {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-desc {
+      color: var(--text-muted);
+      font-size: 1.05rem;
+      max-width: 860px;
+    }
+
+    /* ==========================================================================
+       Interactive jQuery Selector Control Panel
+       ========================================================================== */
+    .control-panel {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem;
+      margin-bottom: 2.5rem;
+      box-shadow: var(--card-shadow);
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .panel-title {
+      font-family: var(--font-heading);
+      font-size: 1.25rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .panel-title i {
+      color: var(--primary);
+    }
+
+    .selector-groups {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .selector-box {
+      background: var(--bg-base);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 1.2rem;
+    }
+
+    .selector-box-title {
+      font-size: 0.82rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .btn-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+    }
+
+    .jq-btn {
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 0.4rem 0.75rem;
+      border-radius: var(--radius-sm);
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .jq-btn:hover {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+      transform: translateY(-1px);
+    }
+
+    /* Live Custom Selector Bar */
+    .custom-selector-bar {
+      display: flex;
+      gap: 0.75rem;
+      background: var(--bg-base);
+      border: 2px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 0.35rem 0.5rem 0.35rem 1rem;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    .custom-selector-bar:focus-within {
+      border-color: var(--border-focus);
+    }
+
+    .custom-selector-input {
+      flex: 1;
+      border: none;
+      background: transparent;
+      color: var(--text-main);
+      font-family: var(--font-mono);
+      font-size: 0.95rem;
+      outline: none;
+    }
+
+    .btn-run {
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      color: #ffffff;
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 0.65rem 1.4rem;
+      font-family: var(--font-heading);
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.2s;
+    }
+    .btn-run:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px var(--primary-glow);
+    }
+
+    .btn-reset {
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      border-radius: var(--radius-sm);
+      padding: 0.65rem 1rem;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-reset:hover {
+      color: var(--accent-coral);
+      border-color: var(--accent-coral);
+    }
+
+    /* Live Terminal Console Log */
+    .live-console {
+      background: #0f172a;
+      color: #38bdf8;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      padding: 1rem 1.25rem;
+      border-radius: var(--radius-md);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      overflow-x: auto;
+    }
+    .console-msg {
+      white-space: nowrap;
+    }
+    .console-count {
+      color: #4ade80;
+      font-weight: 700;
+    }
+
+    /* ==========================================================================
+       Data Items Grid (Requirements 2, 3, 4: Common Class, Unique IDs, data-*)
+       ========================================================================== */
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+      gap: 1.75rem;
+    }
+
+    /* Common CSS Class: .care-service-item */
+    .care-service-item {
+      background: var(--bg-surface);
+      border: 2px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem;
+      box-shadow: var(--card-shadow);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      overflow: hidden;
+    }
+
+    .care-service-item:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--card-shadow-hover);
+      border-color: var(--primary);
+    }
+
+    /* Highlight class dynamically added by jQuery */
+    .care-service-item.jq-highlighted {
+      border-color: #f59e0b !important;
+      box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.3), 0 20px 30px rgba(245, 158, 11, 0.15) !important;
+      transform: scale(1.02) translateY(-4px) !important;
+    }
+
+    .care-service-item.jq-selected-target {
+      border-color: #10b981 !important;
+      box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.35) !important;
+    }
+
+    .item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1rem;
+    }
+
+    .item-icon-box {
+      width: 52px;
+      height: 52px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      color: #ffffff;
+      flex-shrink: 0;
+    }
+
+    .icon-teal   { background: linear-gradient(135deg, #0f766e, #14b8a6); }
+    .icon-blue   { background: linear-gradient(135deg, #0284c7, #38bdf8); }
+    .icon-coral  { background: linear-gradient(135deg, #e11d48, #fb7185); }
+    .icon-purple { background: linear-gradient(135deg, #7c3aed, #c084fc); }
+    .icon-amber  { background: linear-gradient(135deg, #d97706, #fbbf24); }
+    .icon-green  { background: linear-gradient(135deg, #16a34a, #4ade80); }
+
+    .item-badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.25rem 0.75rem;
+      border-radius: var(--radius-full);
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .badge-category {
+      background: var(--primary-glow);
+      color: var(--primary);
+      border: 1px solid rgba(15, 118, 110, 0.25);
+    }
+
+    .item-meta-id {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text-light);
+      margin-bottom: 0.4rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .item-title {
+      font-family: var(--font-heading);
+      font-size: 1.35rem;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      line-height: 1.25;
+      margin-bottom: 0.5rem;
+      color: var(--text-main);
+    }
+
+    .item-description {
+      color: var(--text-muted);
+      font-size: 0.92rem;
+      margin-bottom: 1.25rem;
+      line-height: 1.5;
+    }
+
+    /* Key Spec Badges & Attributes Display */
+    .specs-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.6rem;
+      margin-bottom: 1.25rem;
+      background: var(--bg-base);
+      padding: 0.85rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+    }
+
+    .spec-entry {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .spec-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      color: var(--text-light);
+      font-weight: 700;
+      letter-spacing: 0.04em;
+    }
+
+    .spec-val {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--text-main);
+      font-family: var(--font-mono);
+    }
+
+    .item-features-list {
+      list-style: none;
+      margin-bottom: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .item-features-list li {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .item-features-list li i {
+      color: var(--primary);
+      font-size: 0.8rem;
+    }
+
+    /* Item Footer & Interactive Action Buttons */
+    .item-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .rate-box {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .rate-amount {
+      font-family: var(--font-heading);
+      font-size: 1.45rem;
+      font-weight: 800;
+      color: var(--primary);
+      line-height: 1;
+    }
+
+    .rate-unit {
+      font-size: 0.75rem;
+      color: var(--text-light);
+    }
+
+    .item-actions {
+      display: flex;
+      gap: 0.4rem;
+    }
+
+    .btn-select {
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 0.5rem 0.85rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-select:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .btn-book {
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      color: #ffffff;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      font-weight: 700;
+      font-family: var(--font-heading);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-book:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px var(--primary-glow);
+    }
+
+    /* Modal / Popup for details */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+      padding: 1.5rem;
+    }
+    .modal-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      max-width: 540px;
+      width: 100%;
+      padding: 2rem;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+      position: relative;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .hero-title { font-size: 1.75rem; }
+      .header-container { flex-direction: column; align-items: flex-start; }
+      .services-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- =========================================================================
+       1. Application Title & Header (Requirement 1)
+       ========================================================================= -->
+  <header class="app-header">
+    <div class="header-container">
+      <a href="index.html" class="brand-group">
+        <div class="brand-logo">
+          <i class="fa-solid fa-heart-pulse"></i>
+        </div>
+        <div class="brand-title">
+          <h1>Assisterly Health Services</h1>
+          <p>Full Stack Lab (23IT721) — Part A: jQuery Selectors</p>
+        </div>
+      </a>
+
+      <div class="header-actions">
+        <span class="header-badge">
+          <i class="fa-brands fa-js"></i> jQuery 3.7.1 Active
+        </span>
+        <a href="index.html" class="nav-btn"><i class="fa-solid fa-house"></i> Main Portal</a>
+        <a href="scraper.php" class="nav-btn"><i class="fa-solid fa-magnifying-glass"></i> URL Scraper</a>
+        <button type="button" class="theme-toggle-btn" id="themeToggleBtn">
+          <i class="fa-solid fa-moon" id="themeIcon"></i>
+          <span id="themeLabel">Dark Mode</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- Hero Banner -->
+    <section class="hero-banner">
+      <div class="hero-tag">
+        <i class="fa-solid fa-code"></i> Laboratory Exercise: Part A
+      </div>
+      <h2 class="hero-title">Interactive Caregiver Services <span>& Content Operations</span></h2>
+      <p class="hero-desc">
+        Demonstrates DOM selection, filtering, attribute interrogation, and content transformations using <strong>jQuery Selectors</strong>.
+        Each service card features a unified CSS class (<code style="font-family: var(--font-mono); color: var(--primary);">.care-service-item</code>), unique IDs (<code style="font-family: var(--font-mono); color: var(--primary);">#service-item-1</code> to <code style="font-family: var(--font-mono); color: var(--primary);">#service-item-6</code>), and rich HTML5 <code style="font-family: var(--font-mono); color: var(--primary);">data-*</code> attributes.
+      </p>
+    </section>
+
+    <!-- =========================================================================
+         Interactive jQuery Selector Playground & Operations Console
+         ========================================================================= -->
+    <section class="control-panel">
+      <div class="panel-header">
+        <h3 class="panel-title">
+          <i class="fa-solid fa-terminal"></i> jQuery Selector Sandbox & Live DOM Operations
+        </h3>
+        <span style="font-size: 0.85rem; color: var(--text-muted);">
+          Click any button to execute live jQuery selectors on the data entities below:
+        </span>
+      </div>
+
+      <!-- Quick Selector Groups -->
+      <div class="selector-groups">
+        
+        <!-- Group 1: Element & ID Selectors -->
+        <div class="selector-box">
+          <div class="selector-box-title">
+            <i class="fa-solid fa-fingerprint"></i> 1. ID & Class Selectors
+          </div>
+          <div class="btn-group">
+            <button type="button" class="jq-btn" data-selector=".care-service-item">$('.care-service-item')</button>
+            <button type="button" class="jq-btn" data-selector="#service-item-1">$('#service-item-1')</button>
+            <button type="button" class="jq-btn" data-selector="#service-item-3">$('#service-item-3')</button>
+            <button type="button" class="jq-btn" data-selector="#service-item-6">$('#service-item-6')</button>
+          </div>
+        </div>
+
+        <!-- Group 2: HTML data-* Attribute Selectors -->
+        <div class="selector-box">
+          <div class="selector-box-title">
+            <i class="fa-solid fa-tags"></i> 2. HTML data-* Attribute Selectors
+          </div>
+          <div class="btn-group">
+            <button type="button" class="jq-btn" data-selector="[data-category='elderly']">$('[data-category="elderly"]')</button>
+            <button type="button" class="jq-btn" data-selector="[data-certified='true']">$('[data-certified="true"]')</button>
+            <button type="button" class="jq-btn" data-selector="[data-tier='premium']">$('[data-tier="premium"]')</button>
+            <button type="button" class="jq-btn" data-selector="[data-rate='45']">$('[data-rate="45"]')</button>
+          </div>
+        </div>
+
+        <!-- Group 3: Positional & Hierarchy Filters -->
+        <div class="selector-box">
+          <div class="selector-box-title">
+            <i class="fa-solid fa-arrows-split-up-and-left"></i> 3. Positional & Pseudo Filters
+          </div>
+          <div class="btn-group">
+            <button type="button" class="jq-btn" data-selector=".care-service-item:first">$('.care-service-item:first')</button>
+            <button type="button" class="jq-btn" data-selector=".care-service-item:last">$('.care-service-item:last')</button>
+            <button type="button" class="jq-btn" data-selector=".care-service-item:even">$('.care-service-item:even')</button>
+            <button type="button" class="jq-btn" data-selector=".care-service-item:odd">$('.care-service-item:odd')</button>
+          </div>
+        </div>
+
+        <!-- Group 4: Live Content & Style Mutations -->
+        <div class="selector-box">
+          <div class="selector-box-title">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> 4. Live Content Mutations
+          </div>
+          <div class="btn-group">
+            <button type="button" class="jq-btn" id="btnApplyDiscount"><i class="fa-solid fa-percent"></i> Apply 15% Discount</button>
+            <button type="button" class="jq-btn" id="btnToggleBadges"><i class="fa-solid fa-toggle-on"></i> Toggle Cert Badges</button>
+            <button type="button" class="jq-btn" id="btnExtractAllData"><i class="fa-solid fa-database"></i> Log data-* Objects</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Live Custom Selector Input Bar -->
+      <div class="custom-selector-bar">
+        <i class="fa-solid fa-terminal" style="color: var(--primary);"></i>
+        <input 
+          type="text" 
+          id="customSelectorInput" 
+          class="custom-selector-input" 
+          placeholder="Type custom jQuery selector... e.g. [data-shifts*='24hr'], .item-title, [data-rating='4.9']"
+          value="[data-certified='true']"
+        >
+        <button type="button" class="btn-run" id="btnRunCustom">
+          <i class="fa-solid fa-play"></i> Run Selector
+        </button>
+        <button type="button" class="btn-reset" id="btnResetAll">
+          <i class="fa-solid fa-rotate-left"></i> Reset
+        </button>
+      </div>
+
+      <!-- Live Output / Results Console -->
+      <div class="live-console">
+        <div class="console-msg" id="consoleOutput">
+          <i class="fa-solid fa-chevron-right"></i> Target ready. Click any selector button above to inspect and highlight matched elements.
+        </div>
+        <div class="console-count" id="matchCount">0 Matched</div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         2, 3, 4: Data Items (Entities)
+         - Common CSS Class: .care-service-item
+         - Unique IDs: #service-item-1 to #service-item-6
+         - Multiple data-* attributes: data-id, data-category, data-rate, data-rating, data-certified, data-shifts, data-tier
+       ========================================================================= -->
+    <section class="services-grid" id="careServicesGrid">
+
+      <!-- Entity 1: Elderly & Mobility Care -->
+      <article 
+        class="care-service-item" 
+        id="service-item-1" 
+        data-id="SRV-101" 
+        data-category="elderly" 
+        data-rate="25" 
+        data-rating="4.9" 
+        data-certified="true" 
+        data-shifts="morning,evening" 
+        data-tier="standard"
+      >
+        <div>
+          <div class="item-header">
+            <div class="item-icon-box icon-teal">
+              <i class="fa-solid fa-person-walking-with-cane"></i>
+            </div>
+            <span class="item-badge-pill badge-category">
+              <i class="fa-solid fa-tag"></i> Elderly Care
+            </span>
+          </div>
+
+          <div class="item-meta-id">
+            <i class="fa-solid fa-hashtag"></i> ID: <strong>service-item-1</strong> | Code: <strong>SRV-101</strong>
+          </div>
+
+          <h3 class="item-title">Elderly & Mobility Support</h3>
+          <p class="item-description">
+            Compassionate daily assistance with bathing, movement therapy, meal preparation, and companion walks for senior citizens.
+          </p>
+
+          <div class="specs-grid">
+            <div class="spec-entry">
+              <span class="spec-label">data-shifts</span>
+              <span class="spec-val">Morning, Evening</span>
+            </div>
+            <div class="spec-entry">
+              <span class="spec-label">data-rating</span>
+              <span class="spec-val"><i class="fa-solid fa-star" style="color: #f59e0b;"></i> 4.9 / 5.0</span>
+            </div>
+            <div class="spec-entry">
+              <span class="spec-label">data-certified</span>
+              <span class="spec-val" style="color: #10b981;"><i class="fa-solid fa-shield-check"></i> Certified</span>
+            </div>
+            <div class="spec-entry">
+              <span class="spec-label">data-tier</span>
+              <span class="spec-val">Standard</span>
+            </div>
+          </div>
+
+          <ul class="item-features-list">
+            <li><i class="fa-solid fa-check"></i> Ambulation & Wheelchair Transfers</li>
+            <li><i class="fa-solid fa-check"></i> Vitals Monitoring & Medication Reminders</li>
+          </ul>
+        </div>
+
+        <div class="item-footer">
+          <div class="rate-box">
+            <span class="rate-amount">$<span class="rate-number">25</span></span>
+            <span class="rate-unit">per hour shift</span>
+          </div>
+          <div class="item-actions">
+            <button type="button" class="btn-select" data-action="inspect"><i class="fa-solid fa-magnifying-glass"></i> Inspect</button>
+            <button type="button" class="btn-book" data-action="book">Book Shift</button>
+          </div>
+        </div>
+      </article>
+
+      <!-- Entity 2: Post-Surgery Wound Recovery -->
+      <article 
+        class="care-service-item" 
+        id="service-item-2" 
+        data-id="SRV-102" 
+        data-category="post-surgery" 
+        data-rate="45" 
+        data-rating="4.8" 
+        data-certified="true" 
+        data-shifts="night,24hr" 
+        data-tier="premium"
+      >
+        <div>
+          <div class="item-header">
+            <div class="item-icon-box icon-coral">
+              <i class="fa-solid fa-kit-medical"></i>
+            </div>
+            <span class="item-badge-pill badge-category">
+              <i class="fa-solid fa-tag"></i> Post-Surgery
+            </span>
+          </div>
+
+          <div class="item-meta-id">
+            <i class="fa-solid fa-hashtag"></i> ID: <strong>service-item-2</strong> | Code: <strong>SRV-102</strong>
+          </div>
+
+          <h3 class="item-title">Post-Surgical & Wound Recovery</h3>
+          <p class="item-description">
+            Licensed nurse visits for sterile dressing changes, IV infusion, post-op drainage management, and pain relief support.
+          </p>
+
+          <div class="specs-grid">
+            <div class="spec-entry">
+              <span class="spec-label">data-shifts</span>
+              <span class="spec-val">Night, 24-Hour</span>
+            </div>
+            <div class="spec-entry">
+              <span class="spec-label">data-rating</span>
+              <span class="spec-val"><i class="fa-solid fa-star" style="color: #f59e0b;"></i> 4.8 / 5.0</span>
+            </div>
+            <div class="spec-entry">
+              <span class="spec-label">data-certified</span>
+              <span class="spec-val" style="color: #10b981;"><i class="fa-solid fa-shield-check"></i> Certified</span>
+            </div>
+            <div class="spec-entry">
+              <span class="spec-label">data-tier</span>
+              <span class="spec-val">Premium</span>
+            </div>
+          </div>
+
+          <ul class="item-features-list">
+            <li><i class="fa-solid fa-check"></i> Surgical Incision Care & Aseptic Dressing</li>
+            <li><i class="fa-solid fa-check"></i> Oxygen Saturation & Catheter Care</li>
+          </ul>
+        </div>
+
+        <div class="item-footer">
+          <div class="rate-box">
+            <span class="rate-amount">$<span class="rate-number">45</span></span>
+            <span class="rate-unit">per hour shift</span>
+          </div>
+          <div class="item-actions">
+            <button type="button" class="btn-select" data-action="inspect"><i class="fa-solid fa-magnifying-glass"></i> Inspect</button>
+            <button type="button" class="btn-book" data-action="book">Book Shift</button>
+          </div>
+        </div>
+      </article>
+
+      <!-- Entity 3: Pediatric & Special Needs Care -->
+      <article 
+        class="care-service-item" 
+        id="service-item-3" 
+        data-id="SRV-103" 
+        data-category="pediatric" 
+        data-rate="35" 
+        data-rating="5.0" 
+        data-certified="true" 
+        data-shifts="morning,afternoon" 
+        data-tier="standard"
+      >
+        <div>
+          <div class="item-header">
+            <div class="item-icon-box icon-blue">
+              <i class="fa-solid fa-child-reaching"></i>
+            </div>
+            <span class="item-badge-pill badge-category">
+              <i class="fa-solid fa-tag"></i> Pediatric Care
+            </span>
+          </div>
+
+          <div class="item-meta-id">
+            <i class="fa-solid fa-hashtag"></i> ID: <strong>service-item-3</strong> | Code: <strong>SRV-103</strong>
+          </div>
+
+          <h3 class="item-title">Pediatric & Special Needs Aid</h3>
+          <p class="item-description">
+            Dedicated one-on-one assistance for children with cerebral palsy, sensory sensitivity, and developmental therapy routines.
+          </p>
+
+          <div class="specs-grid">
+            <div class="spec-entry">
+              <span class="spec-label">data-shifts</span>
+              <span class="spec-val">Morning, Afternoon</span>
+            </div>
+            <div class="spec-entry">
+              <span class="spec-label">data-rating</span>
+              <span class="spec-val"><i class="fa-solid fa-star" style="color: #f59e0b;"></i> 5.0 / 5.0</span>
+            </div>
+            <div class="spec-entry">
+              <span class="spec-label">data-certified</span>
+              <span class="spec-val" style="color: #10b981;"><i class="fa-solid fa-shield-check"></i> Certified</span>
+            </div>
+            <div class="spec-entry">
+              <span class="spec-label">data-tier</span>
+              <span class="spec-val">Standard</span>
+            </div>
+          </div>
+
+          <ul class="item-features-list">
+            <li><i class="fa-solid fa-check"></i> Motor Skill Exercises & School Prep</li>
+            <li><i class="fa-solid fa-check"></i> Pediatric Tube Feeding & Speech Aid</li>
+          </ul>
+        </div>
+
+        <div class="item-footer">
+          <div class="rate-box">
+            <span class="rate-amount">$<span class="rate-number">35</span></span>
+            <span class="rate-unit">per hour shift</span>
+          </div>
+          <div class="item-actions">
+            <button type="button" class="btn-select" data-action="inspect"><i class="fa-solid fa-magnifying-glass"></i> Inspect</button>
+            <button type="button" class="btn-book" data-action="book">Book Shift</button>
+          </div>
+        </div>
+      </article>
+
+      <!-- Entity 4: Dementia & Alzheimer's Memory Care -->
+      <article 
+        class="care-service-item" 
+        id="service-item-4" 
+        data-id="SRV-104" 
+        data-category="memory-care" 
+        data-rate="50" 
+        data-rating="4.9" 
+        data-certified="true" 
+        data-shifts="24hr" 
+        data-tier="premium"
+      >
+        <div>
+          <div class="item-header">
+            <div class="item-icon-box icon-purple">
+              <i class="fa-solid fa-brain"></i>
+            </div>
+            <span class="item-badge-pill badge-category">
+              <i class="fa-solid fa-tag"></i> Memory Care
+            </span>
+          </div>
+
+          <div class="item-meta-id">
+            <i class="fa-solid fa-hashtag"></i> ID: <strong>service-item-4</strong> | Code: <strong>SRV-104</strong>
+          </div>
+
+          <h3 class="item-title">Dementia & Alzheimer's Care</h3>
+          <p class="item-description">
+            Structured cognitive stimulation, gentle agitation calming, anti-wandering supervision, and 24-hour safety watch.
+          </p>
+
+          <div class="specs-grid">
+            <div class="spec-entry">
+              <span class="spec-label">data-shifts</span>
+              <span class="spec-val">24-Hour Continuous</span>
+            </div>
+            <div class="spec-entry">
+              <span class="spec-label">data-rating</span>
+              <span class="spec-val"><i class="fa-solid fa-star" style="color: #f59e0b;"></i> 4.9 / 5.0</span>
+            </div>
+            <div class="spec-entry">
+              <span class="spec-label">data-certified</span>
+              <span class="spec-val" style="color: #10b981;"><i class="fa-solid fa-shield-check"></i> Certified</span>
+            </div>
+            <div class="spec-entry">
+              <span class="spec-label">data-tier</span>
+              <span class="spec-val">Premium</span>
+            </div>
+          </div>
+
+          <ul class="item-features-list">
+            <li><i class="fa-solid fa-check"></i> Reminiscence & Cognitive Engagement</li>
+            <li><i class="fa-solid fa-check"></i> Sundowning Calming Protocols</li>
+          </ul>
+        </div>
+
+        <div class="item-footer">
+          <div class="rate-box">
+            <span class="rate-amount">$<span class="rate-number">50</span></span>
+            <span class="rate-unit">per hour shift</span>
+          </div>
+          <div class="item-actions">
+            <button type="button" class="btn-select" data-action="inspect"><i class="fa-solid fa-magnifying-glass"></i> Inspect</button>
+            <button type="button" class="btn-book" data-action="book">Book Shift</button>
+          </div>
+        </div>
+      </article>
+
+      <!-- Entity 5: Respite & Family Relief Care -->
+      <article 
+        class="care-service-item" 
+        id="service-item-5" 
+        data-id="SRV-105" 
+        data-category="respite" 
+        data-rate="28" 
+        data-rating="4.7" 
+        data-certified="false" 
+        data-shifts="flexible" 
+        data-tier="standard"
+      >
+        <div>
+          <div class="item-header">
+            <div class="item-icon-box icon-amber">
+              <i class="fa-solid fa-mug-hot"></i>
+            </div>
+            <span class="item-badge-pill badge-category">
+              <i class="fa-solid fa-tag"></i> Respite Care
+            </span>
+          </div>
+
+          <div class="item-meta-id">
+            <i class="fa-solid fa-hashtag"></i> ID: <strong>service-item-5</strong> | Code: <strong>SRV-105</strong>
+          </div>
+
+          <h3 class="item-title">Respite & Family Relief Aid</h3>
+          <p class="item-description">
+            Short-term relief for family caregivers. Providing errands, companionship, meal serving, and dependable supervision.
+          </p>
+
+          <div class="specs-grid">
+            <div class="spec-entry">
+              <span class="spec-label">data-shifts</span>
+              <span class="spec-val">Flexible Hours</span>
+            </div>
+            <div class="spec-entry">
+              <span class="spec-label">data-rating</span>
+              <span class="spec-val"><i class="fa-solid fa-star" style="color: #f59e0b;"></i> 4.7 / 5.0</span>
+            </div>
+            <div class="spec-entry">
+              <span class="spec-label">data-certified</span>
+              <span class="spec-val" style="color: var(--text-light);"><i class="fa-solid fa-user"></i> Assistant</span>
+            </div>
+            <div class="spec-entry">
+              <span class="spec-label">data-tier</span>
+              <span class="spec-val">Standard</span>
+            </div>
+          </div>
+
+          <ul class="item-features-list">
+            <li><i class="fa-solid fa-check"></i> Family Caregiver Break Relief</li>
+            <li><i class="fa-solid fa-check"></i> Light Housekeeping & Grocery Assistance</li>
+          </ul>
+        </div>
+
+        <div class="item-footer">
+          <div class="rate-box">
+            <span class="rate-amount">$<span class="rate-number">28</span></span>
+            <span class="rate-unit">per hour shift</span>
+          </div>
+          <div class="item-actions">
+            <button type="button" class="btn-select" data-action="inspect"><i class="fa-solid fa-magnifying-glass"></i> Inspect</button>
+            <button type="button" class="btn-book" data-action="book">Book Shift</button>
+          </div>
+        </div>
+      </article>
+
+      <!-- Entity 6: Palliative Comfort & Critical Support -->
+      <article 
+        class="care-service-item" 
+        id="service-item-6" 
+        data-id="SRV-106" 
+        data-category="palliative" 
+        data-rate="60" 
+        data-rating="4.95" 
+        data-certified="true" 
+        data-shifts="night,24hr" 
+        data-tier="premium"
+      >
+        <div>
+          <div class="item-header">
+            <div class="item-icon-box icon-green">
+              <i class="fa-solid fa-hand-holding-heart"></i>
+            </div>
+            <span class="item-badge-pill badge-category">
+              <i class="fa-solid fa-tag"></i> Palliative Care
+            </span>
+          </div>
+
+          <div class="item-meta-id">
+            <i class="fa-solid fa-hashtag"></i> ID: <strong>service-item-6</strong> | Code: <strong>SRV-106</strong>
+          </div>
+
+          <h3 class="item-title">Palliative & Hospice Comfort</h3>
+          <p class="item-description">
+            Empathetic end-of-life care focusing on dignity, pain management, position adjustments, and emotional comfort for families.
+          </p>
+
+          <div class="specs-grid">
+            <div class="spec-entry">
+              <span class="spec-label">data-shifts</span>
+              <span class="spec-val">Night, 24-Hour</span>
+            </div>
+            <div class="spec-entry">
+              <span class="spec-label">data-rating</span>
+              <span class="spec-val"><i class="fa-solid fa-star" style="color: #f59e0b;"></i> 4.95 / 5.0</span>
+            </div>
+            <div class="spec-entry">
+              <span class="spec-label">data-certified</span>
+              <span class="spec-val" style="color: #10b981;"><i class="fa-solid fa-shield-check"></i> Certified</span>
+            </div>
+            <div class="spec-entry">
+              <span class="spec-label">data-tier</span>
+              <span class="spec-val">Premium</span>
+            </div>
+          </div>
+
+          <ul class="item-features-list">
+            <li><i class="fa-solid fa-check"></i> Specialized Pain Alleviation & Nursing</li>
+            <li><i class="fa-solid fa-check"></i> Pressure Sore Prevention & Turning</li>
+          </ul>
+        </div>
+
+        <div class="item-footer">
+          <div class="rate-box">
+            <span class="rate-amount">$<span class="rate-number">60</span></span>
+            <span class="rate-unit">per hour shift</span>
+          </div>
+          <div class="item-actions">
+            <button type="button" class="btn-select" data-action="inspect"><i class="fa-solid fa-magnifying-glass"></i> Inspect</button>
+            <button type="button" class="btn-book" data-action="book">Book Shift</button>
+          </div>
+        </div>
+      </article>
+
+    </section>
+
+  </main>
+
+  <!-- Inspector Modal (Populated dynamically via jQuery) -->
+  <div class="modal-overlay" id="inspectorModal">
+    <div class="modal-card">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <h3 id="modalTitle" style="font-family: var(--font-heading); font-size: 1.25rem;">Entity Inspection</h3>
+        <button type="button" id="modalCloseBtn" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--text-muted);">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div id="modalBody" style="font-size: 0.95rem;"></div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       jQuery Script: Content Operations & Selector Event Handlers
+       ========================================================================= -->
+  <script>
+    $(document).ready(function() {
+
+      // -----------------------------------------------------------------------
+      // 1. Theme Switcher using jQuery
+      // -----------------------------------------------------------------------
+      $('#themeToggleBtn').on('click', function() {
+        const currentTheme = $('html').attr('data-theme') || 'light';
+        const newTheme = (currentTheme === 'dark') ? 'light' : 'dark';
+        
+        $('html').attr('data-theme', newTheme);
+        localStorage.setItem('assisterly_theme', newTheme);
+        updateThemeLabels(newTheme);
+      });
+
+      function updateThemeLabels(theme) {
+        if (theme === 'dark') {
+          $('#themeIcon').removeClass('fa-moon').addClass('fa-sun');
+          $('#themeLabel').text('Light Mode');
+        } else {
+          $('#themeIcon').removeClass('fa-sun').addClass('fa-moon');
+          $('#themeLabel').text('Dark Mode');
+        }
+      }
+
+      // Initialize theme on page load
+      const savedTheme = localStorage.getItem('assisterly_theme') || 'light';
+      $('html').attr('data-theme', savedTheme);
+      updateThemeLabels(savedTheme);
+
+
+      // -----------------------------------------------------------------------
+      // 2. Core Selector Execution Engine
+      // -----------------------------------------------------------------------
+      function executeJQuerySelector(selectorStr) {
+        // Clear previous highlights
+        $('.care-service-item').removeClass('jq-highlighted');
+
+        try {
+          // Execute the selector dynamically
+          const $matched = $(selectorStr);
+          const count = $matched.length;
+
+          // Highlight matched elements if they are cards or within cards
+          $matched.each(function() {
+            if ($(this).hasClass('care-service-item')) {
+              $(this).addClass('jq-highlighted');
+            } else {
+              $(this).closest('.care-service-item').addClass('jq-highlighted');
+            }
+          });
+
+          // Update Console Log
+          $('#consoleOutput').html(`
+            <i class="fa-solid fa-check-circle" style="color: #4ade80;"></i> 
+            Executed: <strong style="color: #f59e0b;">$("${selectorStr}")</strong>
+          `);
+          $('#matchCount').text(`${count} Matched`);
+
+          // Smooth scroll to the first match if available
+          if (count > 0) {
+            $('html, body').animate({
+              scrollTop: $matched.first().offset().top - 120
+            }, 300);
+          }
+
+        } catch (error) {
+          $('#consoleOutput').html(`
+            <i class="fa-solid fa-triangle-exclamation" style="color: #fb7185;"></i> 
+            Selector Error: <em>${error.message}</em>
+          `);
+          $('#matchCount').text('0 Matched');
+        }
+      }
+
+      // Handle Preset Selector Buttons
+      $('.jq-btn[data-selector]').on('click', function() {
+        const selector = $(this).attr('data-selector');
+        $('#customSelectorInput').val(selector);
+        executeJQuerySelector(selector);
+      });
+
+      // Handle Custom Selector Run
+      $('#btnRunCustom').on('click', function() {
+        const customSelector = $('#customSelectorInput').val().trim();
+        if (customSelector) {
+          executeJQuerySelector(customSelector);
+        }
+      });
+
+      // Allow pressing 'Enter' in custom selector input
+      $('#customSelectorInput').on('keypress', function(e) {
+        if (e.which === 13) {
+          $('#btnRunCustom').trigger('click');
+        }
+      });
+
+      // Handle Reset All Button
+      $('#btnResetAll').on('click', function() {
+        $('.care-service-item').removeClass('jq-highlighted');
+        $('#consoleOutput').html('<i class="fa-solid fa-chevron-right"></i> Workspace reset. Selectors cleared.');
+        $('#matchCount').text('0 Matched');
+      });
+
+
+      // -----------------------------------------------------------------------
+      // 3. jQuery Content & Style Mutations (Demonstrating DOM Operations)
+      // -----------------------------------------------------------------------
+      
+      // A. Apply 15% Discount on hourly rates using $(...).text() and $(...).each()
+      let discountApplied = false;
+      $('#btnApplyDiscount').on('click', function() {
+        if (!discountApplied) {
+          $('.care-service-item').each(function() {
+            const originalRate = parseFloat($(this).attr('data-rate'));
+            const discounted = Math.round(originalRate * 0.85);
+            $(this).find('.rate-number').text(discounted);
+            $(this).find('.rate-box').append('<span class="discount-badge" style="font-size: 0.7rem; color: #10b981; font-weight: bold;">(15% OFF)</span>');
+          });
+          $(this).html('<i class="fa-solid fa-rotate-left"></i> Revert Rates');
+          discountApplied = true;
+          $('#consoleOutput').html('<i class="fa-solid fa-wand-magic-sparkles"></i> Applied 15% discount across all services via <code>$(...).each()</code>.');
+        } else {
+          $('.care-service-item').each(function() {
+            const originalRate = $(this).attr('data-rate');
+            $(this).find('.rate-number').text(originalRate);
+            $(this).find('.discount-badge').remove();
+          });
+          $(this).html('<i class="fa-solid fa-percent"></i> Apply 15% Discount');
+          discountApplied = false;
+          $('#consoleOutput').html('<i class="fa-solid fa-rotate-left"></i> Reverted hourly rates back to standard pricing.');
+        }
+      });
+
+      // B. Toggle Certification Badges Visibility using $(...).fadeToggle()
+      $('#btnToggleBadges').on('click', function() {
+        $('[data-certified="true"] .spec-entry:has(.fa-shield-check)').fadeToggle(300);
+        $('#consoleOutput').html('<i class="fa-solid fa-eye-slash"></i> Toggled certified nurse badges using <code>$("[data-certified=\'true\']").fadeToggle()</code>.');
+      });
+
+      // C. Extract all HTML data-* objects using $(...).data() and display
+      $('#btnExtractAllData').on('click', function() {
+        const extractedData = [];
+        $('.care-service-item').each(function() {
+          extractedData.push({
+            id: $(this).attr('id'),
+            code: $(this).data('id'),
+            category: $(this).data('category'),
+            rate: $(this).data('rate'),
+            rating: $(this).data('rating'),
+            certified: $(this).data('certified'),
+            shifts: $(this).data('shifts'),
+            tier: $(this).data('tier')
+          });
+        });
+        
+        console.table(extractedData);
+        alert('Extracted data-* objects for ' + extractedData.length + ' entities. Check browser Developer Console (F12) for the table!');
+        $('#consoleOutput').html('<i class="fa-solid fa-table"></i> Logged all <code>data-*</code> objects into Console Table.');
+      });
+
+      // D. Interactive Card Inspection Popup
+      $('.care-service-item [data-action="inspect"]').on('click', function(e) {
+        e.stopPropagation();
+        const $card = $(this).closest('.care-service-item');
+        const id = $card.attr('id');
+        const title = $card.find('.item-title').text();
+        const code = $card.data('id');
+        const category = $card.data('category');
+        const rate = $card.data('rate');
+        const rating = $card.data('rating');
+        const certified = $card.data('certified');
+        const shifts = $card.data('shifts');
+
+        $('#modalTitle').html(`<i class="fa-solid fa-circle-info" style="color: var(--primary);"></i> ${title}`);
+        $('#modalBody').html(`
+          <div style="background: var(--bg-base); padding: 1rem; border-radius: 8px; font-family: var(--font-mono); margin-bottom: 1rem;">
+            <p><strong>Unique HTML ID:</strong> #${id}</p>
+            <p><strong>data-id:</strong> "${code}"</p>
+            <p><strong>data-category:</strong> "${category}"</p>
+            <p><strong>data-rate:</strong> $${rate}/hr</p>
+            <p><strong>data-rating:</strong> ${rating} / 5.0</p>
+            <p><strong>data-certified:</strong> ${certified}</p>
+            <p><strong>data-shifts:</strong> "${shifts}"</p>
+          </div>
+          <p style="color: var(--text-muted);">
+            This entity was interrogated directly via jQuery: <code>$('#${id}').data()</code>.
+          </p>
+        `);
+
+        $('#inspectorModal').css('display', 'flex').hide().fadeIn(200);
+      });
+
+      // Close modal
+      $('#modalCloseBtn, #inspectorModal').on('click', function(e) {
+        if (e.target === this || e.target.id === 'modalCloseBtn' || $(e.target).closest('#modalCloseBtn').length) {
+          $('#inspectorModal').fadeOut(200);
+        }
+      });
+
+      // E. Book shift interactive alert
+      $('.care-service-item [data-action="book"]').on('click', function() {
+        const title = $(this).closest('.care-service-item').find('.item-title').text();
+        alert(`Booking requested for: "${title}". Redirecting to scheduling form.`);
+      });
+
+    });
+  </script>
+</body>
+</html>

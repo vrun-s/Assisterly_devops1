@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Assisterly — Caregiver & Home Care Dashboard</title>
+  <meta name="description"
+    content="Assisterly Caregiver Platform — Connecting families with background-verified caregivers, live clinical tracking, and shift management.">
+  
+  <!-- S.No 19, 21: External Stylesheet Link -->
+  <link rel="stylesheet" href="style.css">
+  
+  <!-- Defer JavaScript execution -->
+  <script src="script.js" defer></script>
+
+  <!-- ===================================================================
+       DEMONSTRATION OF INTERNAL STYLESHEET (Requirement Title & S.No 25, 31, 32)
+       Explicit Internal CSS block for drop caps, tooltips, selection highlight,
+       and custom keyframe animations.
+  =================================================================== -->
+  <style>
+    /* Internal Stylesheet Demonstration */
+    ::selection {
+      background-color: #C66B3D;
+      color: #FFFFFF;
+    }
+
+    /* CSS Pseudo Element: ::first-letter drop caps on lead intro paragraph (S.No 25) */
+    .lead-story-text::first-letter {
+      font-family: 'Outfit', sans-serif;
+      font-size: 3.2rem;
+      font-weight: 800;
+      float: left;
+      line-height: 0.8;
+      margin-right: 0.75rem;
+      color: var(--color-terracotta, #C66B3D);
+      text-transform: uppercase;
+    }
+
+    /* CSS Pseudo Element: ::first-line highlight (S.No 25) */
+    .banner-highlight::first-line {
+      font-weight: 700;
+      color: var(--color-pine, #1F3D3B);
+      letter-spacing: 0.02em;
+    }
+
+    /* CSS Tooltips (S.No 32) - Pure Internal CSS implementation */
+    [data-tooltip] {
+      position: relative;
+      cursor: pointer;
+    }
+    [data-tooltip]::before {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: 125%;
+      left: 50%;
+      transform: translateX(-50%) translateY(5px);
+      background-color: rgba(31, 61, 59, 0.95);
+      color: #ffffff;
+      padding: 0.35rem 0.75rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      white-space: nowrap;
+      border-radius: 4px;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.25s ease-in-out;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      z-index: 100;
+    }
+    [data-tooltip]::after {
+      content: '';
+      position: absolute;
+      bottom: 110%;
+      left: 50%;
+      transform: translateX(-50%) translateY(5px);
+      border-width: 5px;
+      border-style: solid;
+      border-color: rgba(31, 61, 59, 0.95) transparent transparent transparent;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.25s ease-in-out;
+      z-index: 100;
+    }
+    [data-tooltip]:hover::before,
+    [data-tooltip]:hover::after {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* CSS Animated Progress Bar (S.No 31) */
+    .progress-bar-container {
+      width: 100%;
+      height: 10px;
+      background-color: var(--color-sand, #E8DCC8);
+      border-radius: 5px;
+      overflow: hidden;
+      margin-top: 0.5rem;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--color-pine) 0%, var(--color-terracotta) 100%);
+      border-radius: 5px;
+      transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ===================================================================
+       1. Header Section & Sticky Navigation (S.No 1, 2, 9, 10, 30)
+       Demonstrates CSS Sticky positioning, Flexbox, & Live Clock
+  =================================================================== -->
+  <header style="border-bottom: 2px solid rgba(31, 61, 59, 0.1);"> <!-- DEMONSTRATION OF INLINE STYLING -->
+    <div class="container">
+      <div class="header-branding">
+        <!-- SVG Heartbeat Pulse Logo (S.No 28 Icons & S.No 14 Heartbeat Pulse Animation) -->
+        <svg class="header-logo animate-heartbeat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+          stroke-linecap="round" stroke-linejoin="round" data-tooltip="Assisterly Health Network">
+          <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+        </svg>
+        <div class="header-title-area">
+          <h1>Assisterly</h1>
+          <p>Trusted Caregivers, Close to Home <span class="typing-cursor"></span></p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <!-- Live Clock Display (S.No 9) -->
+        <div class="live-clock-badge" id="live-clock-badge" data-tooltip="Real-Time System Clock">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          <span id="live-clock">Loading Time...</span>
+        </div>
+        <!-- Theme Toggle Switch (S.No 10 Light/Dark Mode) -->
+        <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle light/dark theme" data-tooltip="Switch Theme Mode">
+          <svg class="theme-toggle-icon moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+          <svg class="theme-toggle-icon sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+          </svg>
+        </button>
+        <div class="header-student-badge">
+          <span class="student-name">Varun</span>
+          <span class="student-reg">Reg: 23IT721</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation Bar (S.No 2, 23 Flexbox, S.No 30 Sticky Positioning) -->
+  <nav class="sticky-nav">
+    <div class="nav-container">
+      <ul class="nav-links">
+        <li><a href="#home" class="active">Home</a></li>
+        <li><a href="#home">About</a></li>
+        <li><a href="#dashboard">Dashboard</a></li>
+        <li><a href="#features">Features</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#caregivers">Caregivers</a></li>
+        <li><a href="scraper.php" style="color: var(--color-terracotta); font-weight: 700;" target="_blank">Web Inspector / Scraper ↗</a></li>
+        <li><a href="jquery-operations.html" style="color: var(--color-terracotta); font-weight: 700;" target="_blank">jQuery Selectors ↗</a></li>
+        <li><a href="#planner" style="color: var(--color-terracotta); font-weight: 700;">Drag & Drop Planner</a></li>
+        <li><a href="planner.html" style="color: var(--color-terracotta); font-weight: 700;" target="_blank">Full Planner ↗</a></li>
+        <li><a href="#storage" style="color: var(--color-terracotta); font-weight: 700;">Storage</a></li>
+        <li><a href="#assignment1" style="color: var(--color-terracotta); font-weight: 700;">Assignment 1 ↗</a></li>
+        <li><a href="#gallery">Gallery</a></li>
+        <li><a href="#reviews">Reviews</a></li>
+        <li><a href="#register">Registration</a></li>
+        <li><a href="#contact">Contact</a></li>
+        <li><a href="#storage">Help</a></li>
+        <li><a href="#logout" class="nav-logout">Logout</a></li>
+        <!-- Notification Bell Toggle (S.No 11) -->
+        <li class="notification-bell-container">
+          <button id="bell-btn" class="bell-btn" aria-label="Toggle notifications center" data-tooltip="System Alerts (3)">
+            <svg class="bell-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+            </svg>
+            <span class="bell-badge" id="bell-badge">3</span>
+          </button>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Notification Drawer Panel (S.No 11 Show/Hide Drawer, Fixed Positioning S.No 30) -->
+  <div id="notification-panel" class="notification-panel">
+    <div class="notification-header">
+      <h3>Care Portal Notifications</h3>
+      <button id="close-notifications" class="close-notifications" aria-label="Close notifications">&times;</button>
+    </div>
+    <ul class="notification-list">
+      <li class="notification-item unread">
+        <p><strong>Critical Alert:</strong> Emergency standby backup request active for Patient #8812.</p>
+        <span class="notification-time">10 mins ago</span>
+        <button class="dismiss-notification" aria-label="Dismiss alert">&times;</button>
+      </li>
+      <li class="notification-item unread">
+        <p><strong>Background Clearance:</strong> 12 new caregiver background verification logs approved.</p>
+        <span class="notification-time">1 hour ago</span>
+        <button class="dismiss-notification" aria-label="Dismiss alert">&times;</button>
+      </li>
+      <li class="notification-item">
+        <p><strong>Special Discount Offer:</strong> 15% promotional discount available on monthly respite care bookings.</p>
+        <span class="notification-time">4 hours ago</span>
+        <button class="dismiss-notification" aria-label="Dismiss alert">&times;</button>
+      </li>
+    </ul>
+  </div>
+
+  <main class="container">
+
+    <!-- ===================================================================
+         3. Welcome Banner Section (S.No 3, 14 Fade-In/Slide-In Animations)
+    =================================================================== -->
+    <section id="home" class="animate-fade-in-up">
+      <div class="welcome-grid">
+        <article class="welcome-intro">
+          <span class="eyebrow" style="letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700;">Assisterly Home Care</span> <!-- Inline Style -->
+          <h2 class="banner-highlight">Compassionate Clinical Care Built on Trust</h2>
+          <p class="lead-story-text">
+            Assisterly connects families caring for paralyzed, bedridden, or elderly individuals with background-verified care assistants and licensed nurses. We reduce the daily load on family members by supplying verified professional support directly to the home environment.
+          </p>
+          <p>
+            Specialized in post-stroke recovery, dementia assistance, mobility support, and emergency caregiver replacement. Explore our interactive portal to monitor system metrics, inspect helper profiles, and book shifts.
+          </p>
+          <div class="banner-actions" style="margin-top: 1.5rem; display: flex; gap: 1rem; flex-wrap: wrap;"> <!-- Inline Flex -->
+            <a href="#register" class="btn btn-submit btn-transition" data-tooltip="Initialize Care Booking">Book Caregiver Now</a>
+            <a href="#services" class="btn btn-cancel btn-transition" data-tooltip="Explore Care Services">View All Services</a>
+          </div>
+        </article>
+        <aside class="welcome-cards">
+          <div class="vision-mission-card hover-lift card-skew">
+            <h3>Our Vision</h3>
+            <p>To establish a dignified, secure, and compassionate care ecosystem in every neighborhood, making specialized home care accessible and stress-free for every family.</p>
+          </div>
+          <div class="vision-mission-card hover-lift card-skew">
+            <h3>Our Mission</h3>
+            <p>To bridge the gap between families and professional helpers through clinical training, strict background verification, and seamless real-time shift coordination.</p>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- Pulse Divider -->
+    <div class="pulse-divider-container">
+      <svg class="pulse-line" viewBox="0 0 100 10" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0,5 L40,5 L43,2 L45,8 L48,1 L50,9 L52,4 L55,5 L100,5" fill="none" stroke="var(--color-sage)" stroke-width="0.75" />
+      </svg>
+    </div>
+
+    <!-- ===================================================================
+         8. Image/Banner Slider Carousel (S.No 8 Auto Image Slider, S.No 29 Image Hover Effects)
+    =================================================================== -->
+    <section id="slider-hero" class="slider-section animate-fade-in-up">
+      <span class="eyebrow">Visual Gallery & Facilities</span>
+      <h2 style="margin-bottom: 1rem;">Platform Showcase Carousel</h2>
+      
+      <div class="slider-container">
+        <!-- Slide 1 -->
+        <div class="slide active img-overlay-wrapper" style="background-image: url('slide1.png');"> <!-- Inline Style for BG Image -->
+          <div class="slide-overlay">
+            <h3>Specialized Clinical Care Coordination</h3>
+            <p>Assisterly pairs certified nursing managers with households to build, customize, and oversee daily patient support routines.</p>
+          </div>
+        </div>
+        <!-- Slide 2 -->
+        <div class="slide img-overlay-wrapper" style="background-image: url('slide2.png');">
+          <div class="slide-overlay">
+            <h3>Rigorous Background Clearance Audits</h3>
+            <p>Every prospective assistant undergoes thorough criminal record history and biometric ID verification for peace of mind.</p>
+          </div>
+        </div>
+        <!-- Slide 3 -->
+        <div class="slide img-overlay-wrapper" style="background-image: url('slide3.png');">
+          <div class="slide-overlay">
+            <h3>Continuous Professional Skills Upgrades</h3>
+            <p>Active helps are updated with advanced patient handling certifications, medical hygiene, and emergency response operations.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slider Navigation Controls (S.No 15 Button Transitions) -->
+      <button class="slider-arrow slider-arrow-left btn-transition" aria-label="Previous Slide" data-tooltip="Previous Slide">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+      </button>
+      <button class="slider-arrow slider-arrow-right btn-transition" aria-label="Next Slide" data-tooltip="Next Slide">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </button>
+      <!-- Indicator Dots -->
+      <div class="slider-dots"></div>
+    </section>
+
+    <!-- ===================================================================
+         4 & 5. Dashboard Statistics Grid (S.No 4, 5 JS Dynamic Animated Counters, S.No 22 CSS Grid, S.No 31 Progress Bars)
+    =================================================================== -->
+    <section id="dashboard" class="animate-fade-in-up">
+      <span class="eyebrow">Real-Time Metrics</span>
+      <h2>System Vital Statistics & Capacity</h2>
+      <div class="stats-grid">
+        <!-- Card 1 -->
+        <div class="stat-card hover-lift card-rotate-hover">
+          <div class="stat-header">
+            <span class="stat-category">Available Helpers</span>
+            <svg class="contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 20px; height: 20px;">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+            </svg>
+          </div>
+          <div>
+            <div class="stat-value" id="stat-total-users">0</div>
+            <div class="stat-label">Available Caregivers (Active)</div>
+            <div class="progress-bar-container" data-tooltip="85% Dispatch Readiness">
+              <div class="progress-bar-fill" style="width: 85%;"></div> <!-- DEMONSTRATION OF INLINE STYLE -->
+            </div>
+          </div>
+        </div>
+        <!-- Card 2 -->
+        <div class="stat-card hover-lift card-rotate-hover">
+          <div class="stat-header">
+            <span class="stat-category">Shift Logs</span>
+            <svg class="contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 20px; height: 20px;">
+              <polyline points="9 11 12 14 22 4"></polyline>
+              <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+            </svg>
+          </div>
+          <div>
+            <div class="stat-value" id="stat-active-caregivers">0</div>
+            <div class="stat-label">Today's Shift Orders Served</div>
+            <div class="progress-bar-container" data-tooltip="92% Completion Rate">
+              <div class="progress-bar-fill" style="width: 92%;"></div>
+            </div>
+          </div>
+        </div>
+        <!-- Card 3 -->
+        <div class="stat-card hover-lift card-rotate-hover">
+          <div class="stat-header">
+            <span class="stat-category">Revenue</span>
+            <svg class="contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 20px; height: 20px;">
+              <line x1="12" y1="1" x2="12" y2="23"></line>
+              <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+            </svg>
+          </div>
+          <div>
+            <div class="stat-value" id="stat-revenue">0</div>
+            <div class="stat-label">Monthly Gross Revenue ($)</div>
+            <div class="progress-bar-container" data-tooltip="98% Target Achievement">
+              <div class="progress-bar-fill" style="width: 98%;"></div>
+            </div>
+          </div>
+        </div>
+        <!-- Card 4 -->
+        <div class="stat-card hover-lift card-rotate-hover">
+          <div class="stat-header">
+            <span class="stat-category">Ratings & Reviews</span>
+            <svg class="contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 20px; height: 20px;">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+            </svg>
+          </div>
+          <div>
+            <div class="stat-value" id="stat-transactions">0</div>
+            <div class="stat-label">Verified Customer Ratings (4.9/5)</div>
+            <div class="progress-bar-container" data-tooltip="96% Positive Reviews">
+              <div class="progress-bar-fill" style="width: 96%;"></div>
+            </div>
+          </div>
+        </div>
+        <!-- Card 5 -->
+        <div class="stat-card hover-lift card-rotate-hover">
+          <div class="stat-header">
+            <span class="stat-category">Visitors</span>
+            <svg class="contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 20px; height: 20px;">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+          </div>
+          <div>
+            <div class="stat-value" id="stat-alerts">0</div>
+            <div class="stat-label">Today's Portal Visitors</div>
+            <div class="progress-bar-container" data-tooltip="78% Traffic Load">
+              <div class="progress-bar-fill" style="width: 78%;"></div>
+            </div>
+          </div>
+        </div>
+        <!-- Card 6 -->
+        <div class="stat-card hover-lift card-rotate-hover">
+          <div class="stat-header">
+            <span class="stat-category">Clearances</span>
+            <svg class="contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 20px; height: 20px;">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            </svg>
+          </div>
+          <div>
+            <div class="stat-value" id="stat-pending">0</div>
+            <div class="stat-label">Pending Biometric Checks</div>
+            <div class="progress-bar-container" data-tooltip="40% Processing Queue">
+              <div class="progress-bar-fill" style="width: 40%;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         6. Features Section (S.No 6 CSS Grid & Animated Cards)
+    =================================================================== -->
+    <section id="features" class="animate-fade-in-up">
+      <span class="eyebrow">Platform Capabilities</span>
+      <h2>Key Features</h2>
+      <div class="grid-cards-container">
+        <div class="feature-card hover-lift card-skew">
+          <div class="card-icon-wrapper">📱</div>
+          <h3>Online Care Booking</h3>
+          <p>Seamlessly select caregiver specialties, shift timings, and emergency requirements through our interactive client booking interface.</p>
+        </div>
+        <div class="feature-card hover-lift card-skew">
+          <div class="card-icon-wrapper">🚑</div>
+          <h3>Home Delivery Care Kits</h3>
+          <p>Instant dispatch of medical consumables, vital tracking devices, and emergency hygiene supplies directly to the patient's doorstep.</p>
+        </div>
+        <div class="feature-card hover-lift card-skew">
+          <div class="card-icon-wrapper">📍</div>
+          <h3>Live Shift Tracking</h3>
+          <p>GPS check-in and check-out logs giving family members real-time visibility into active caregiver arrival and shift duration.</p>
+        </div>
+        <div class="feature-card hover-lift card-skew">
+          <div class="card-icon-wrapper">🏥</div>
+          <h3>Respite & Party Hall Support</h3>
+          <p>Dedicated standby care assistance for social events, family gatherings, or weekend respite breaks for primary family caregivers.</p>
+        </div>
+        <div class="feature-card hover-lift card-skew">
+          <div class="card-icon-wrapper">💳</div>
+          <h3>Digital Payment Gateway</h3>
+          <p>Encrypted, transparent billing support for credit cards, UPI, net banking, and automatic monthly insurance receipt generation.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         7. Services Section (S.No 7 Services Grid & Hover Effects)
+    =================================================================== -->
+    <section id="services" class="animate-fade-in-up">
+      <span class="eyebrow">What We Offer</span>
+      <h2>Our Care Services</h2>
+      <div class="grid-services-container">
+        <div class="service-card hover-lift">
+          <span class="service-number">01</span>
+          <h3>In-Home Personal Care</h3>
+          <p>Assistance with bathing, grooming, mobility support, and medication schedules tailored to bedridden and elderly individuals.</p>
+        </div>
+        <div class="service-card hover-lift">
+          <span class="service-number">02</span>
+          <h3>Medical Transport & Escort</h3>
+          <p>Safe hospital visit escorts, appointment coordination, and wheel-chair assisted transport services.</p>
+        </div>
+        <div class="service-card hover-lift">
+          <span class="service-number">03</span>
+          <h3>24x7 Night Shift Care</h3>
+          <p>Overnight clinical monitoring ensuring immediate assistance during nocturnal medical needs and posture change rotas.</p>
+        </div>
+        <div class="service-card hover-lift">
+          <span class="service-number">04</span>
+          <h3>Specialized Rehabilitation</h3>
+          <p>Post-stroke and neuro-muscular exercise assistance supervised by visiting physiotherapists and certified nurses.</p>
+        </div>
+        <div class="service-card hover-lift">
+          <span class="service-number">05</span>
+          <h3>Emergency Replacement</h3>
+          <p>Guaranteed 24x7 standby helper routing within 30 minutes if an active primary caregiver faces an unforeseen emergency.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         Featured Caregivers / Staff Showcase Section (S.No 28 Icons, S.No 29 Image Effects)
+    =================================================================== -->
+    <section id="caregivers" class="animate-fade-in-up">
+      <span class="eyebrow">Certified Professionals</span>
+      <h2>Our Top Featured Caregivers</h2>
+      <div class="grid-cards-container">
+        <!-- Caregiver 1 -->
+        <div class="caregiver-card hover-lift">
+          <div class="img-effect-box img-zoom"> <!-- Image Zoom Hover Effect (S.No 29) -->
+            <div class="caregiver-avatar-placeholder" style="background: linear-gradient(135deg, #1F3D3B, #7A9E99); color: white; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; font-weight: 700; height: 180px;">
+              SR
+            </div>
+          </div>
+          <div class="caregiver-info" style="padding: 1rem;">
+            <h3>Sister Sarah Ramesh</h3>
+            <p style="color: var(--color-terracotta); font-weight: 600;">Senior ICU Nurse (8+ Yrs Exp)</p>
+            <p style="font-size: 0.85rem; margin-top: 0.5rem;">Specialist in post-operative care, tracheostomy hygiene, and ventilator assistance.</p>
+            <span class="rating-chip" style="display: inline-block; background: var(--color-sand); padding: 0.25rem 0.5rem; border-radius: 4px; font-weight: 700; margin-top: 0.5rem;">★ 4.98 Rating</span>
+          </div>
+        </div>
+        <!-- Caregiver 2 -->
+        <div class="caregiver-card hover-lift">
+          <div class="img-effect-box img-grayscale"> <!-- Grayscale Hover Effect (S.No 29) -->
+            <div class="caregiver-avatar-placeholder" style="background: linear-gradient(135deg, #C66B3D, #E8DCC8); color: white; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; font-weight: 700; height: 180px;">
+              RK
+            </div>
+          </div>
+          <div class="caregiver-info" style="padding: 1rem;">
+            <h3>Rajesh Kumar</h3>
+            <p style="color: var(--color-terracotta); font-weight: 600;">Mobility & Stroke Therapist</p>
+            <p style="font-size: 0.85rem; margin-top: 0.5rem;">Certified in patient lifting techniques, wheelchair transfers, and limb rehabilitation.</p>
+            <span class="rating-chip" style="display: inline-block; background: var(--color-sand); padding: 0.25rem 0.5rem; border-radius: 4px; font-weight: 700; margin-top: 0.5rem;">★ 4.95 Rating</span>
+          </div>
+        </div>
+        <!-- Caregiver 3 -->
+        <div class="caregiver-card hover-lift">
+          <div class="img-effect-box img-blur"> <!-- Blur Hover Effect (S.No 29) -->
+            <div class="caregiver-avatar-placeholder" style="background: linear-gradient(135deg, #7A9E99, #1F3D3B); color: white; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; font-weight: 700; height: 180px;">
+              AM
+            </div>
+          </div>
+          <div class="caregiver-info" style="padding: 1rem;">
+            <h3>Anitha Mary</h3>
+            <p style="color: var(--color-terracotta); font-weight: 600;">Elderly Dementia Care Specialist</p>
+            <p style="font-size: 0.85rem; margin-top: 0.5rem;">Expert in cognitive engagement games, routine maintenance, and gentle companion care.</p>
+            <span class="rating-chip" style="display: inline-block; background: var(--color-sand); padding: 0.25rem 0.5rem; border-radius: 4px; font-weight: 700; margin-top: 0.5rem;">★ 4.99 Rating</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         HTML5 Drag & Drop Caregiver Shift Scheduler Section
+    =================================================================== -->
+    <section id="planner" class="animate-fade-in-up">
+      <div class="list-panel hover-lift" style="background-color: var(--color-white); padding: 2rem; border-radius: var(--border-radius-lg); border: 1px solid rgba(122, 158, 153, 0.2); box-shadow: var(--shadow-medium);">
+        <span class="eyebrow">Interactive Shift Coordinator (HTML5 Drag & Drop API)</span>
+        <h2>Interactive Caregiver Drag & Drop Shift Planner</h2>
+        <p style="margin-bottom: 1rem; color: var(--color-sage);">
+          Drag a certified caregiver badge from the available deck below and drop them directly onto a shift schedule slot to match care requirements dynamically. You can also access the full standalone <a href="planner.html" target="_blank" style="color: var(--color-terracotta); font-weight: 700; text-decoration: underline;">Interactive Shift Planner Portal ↗</a>.
+        </p>
+
+        <div class="drag-drop-container" style="display: grid; grid-template-columns: 1fr 2fr; gap: 1.5rem; margin-top: 1.5rem;">
+          
+          <!-- Source Deck -->
+          <div class="drag-deck-panel" style="background: var(--color-sand); padding: 1.25rem; border-radius: var(--border-radius-lg); border: 1px dashed var(--color-sage);">
+            <h4 style="margin-bottom: 1rem; color: var(--color-pine);">Available Caregivers (Drag Deck)</h4>
+            <div id="caregiver-drag-deck" style="display: flex; flex-direction: column; gap: 0.75rem; min-height: 220px; padding: 0.5rem; border-radius: 6px; background: rgba(255, 255, 255, 0.5);">
+              
+              <div class="draggable-caregiver-card" draggable="true" id="drag-cg-1" style="background: var(--bg-light); padding: 0.85rem 1rem; border-radius: var(--border-radius-md); border: 1px solid var(--color-sage); cursor: grab; display: flex; align-items: center; justify-content: space-between; box-shadow: var(--shadow-subtle);">
+                <div>
+                  <strong style="color: var(--color-pine); display: block;">Sister Sarah Ramesh</strong>
+                  <small style="color: var(--color-terracotta); font-weight: 600;">Senior ICU Nurse</small>
+                </div>
+                <span style="font-size: 1.2rem; color: var(--color-sage);" data-tooltip="Drag Me">⠿</span>
+              </div>
+
+              <div class="draggable-caregiver-card" draggable="true" id="drag-cg-2" style="background: var(--bg-light); padding: 0.85rem 1rem; border-radius: var(--border-radius-md); border: 1px solid var(--color-sage); cursor: grab; display: flex; align-items: center; justify-content: space-between; box-shadow: var(--shadow-subtle);">
+                <div>
+                  <strong style="color: var(--color-pine); display: block;">Rajesh Kumar</strong>
+                  <small style="color: var(--color-terracotta); font-weight: 600;">Stroke & Mobility Specialist</small>
+                </div>
+                <span style="font-size: 1.2rem; color: var(--color-sage);" data-tooltip="Drag Me">⠿</span>
+              </div>
+
+              <div class="draggable-caregiver-card" draggable="true" id="drag-cg-3" style="background: var(--bg-light); padding: 0.85rem 1rem; border-radius: var(--border-radius-md); border: 1px solid var(--color-sage); cursor: grab; display: flex; align-items: center; justify-content: space-between; box-shadow: var(--shadow-subtle);">
+                <div>
+                  <strong style="color: var(--color-pine); display: block;">Anitha Mary</strong>
+                  <small style="color: var(--color-terracotta); font-weight: 600;">Elderly Dementia Companion</small>
+                </div>
+                <span style="font-size: 1.2rem; color: var(--color-sage);" data-tooltip="Drag Me">⠿</span>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Target Drop Slots -->
+          <div class="drag-slots-panel" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem;">
+            
+            <div class="drop-slot" id="slot-morning" style="background: var(--bg-light); padding: 1.25rem; border-radius: var(--border-radius-lg); border: 2px dashed var(--color-sage); min-height: 160px; display: flex; flex-direction: column; justify-content: space-between;">
+              <h4 style="font-size: 0.95rem; color: var(--color-pine); margin-bottom: 0.5rem;">🌅 Morning Shift (07:00 AM - 03:00 PM)</h4>
+              <div class="slot-drop-zone" style="min-height: 80px; display: flex; align-items: center; justify-content: center; border-radius: 6px; padding: 0.5rem; background: rgba(122, 158, 153, 0.08); transition: all 0.3s ease;">
+                <p class="drop-placeholder-text" style="font-size: 0.85rem; color: var(--color-sage); text-align: center;">Drag & Drop Caregiver Here</p>
+              </div>
+            </div>
+
+            <div class="drop-slot" id="slot-evening" style="background: var(--bg-light); padding: 1.25rem; border-radius: var(--border-radius-lg); border: 2px dashed var(--color-sage); min-height: 160px; display: flex; flex-direction: column; justify-content: space-between;">
+              <h4 style="font-size: 0.95rem; color: var(--color-pine); margin-bottom: 0.5rem;">🌆 Evening Shift (03:00 PM - 11:00 PM)</h4>
+              <div class="slot-drop-zone" style="min-height: 80px; display: flex; align-items: center; justify-content: center; border-radius: 6px; padding: 0.5rem; background: rgba(122, 158, 153, 0.08); transition: all 0.3s ease;">
+                <p class="drop-placeholder-text" style="font-size: 0.85rem; color: var(--color-sage); text-align: center;">Drag & Drop Caregiver Here</p>
+              </div>
+            </div>
+
+            <div class="drop-slot" id="slot-night" style="background: var(--bg-light); padding: 1.25rem; border-radius: var(--border-radius-lg); border: 2px dashed var(--color-sage); min-height: 160px; display: flex; flex-direction: column; justify-content: space-between;">
+              <h4 style="font-size: 0.95rem; color: var(--color-pine); margin-bottom: 0.5rem;">🌃 Night Shift (11:00 PM - 07:00 AM)</h4>
+              <div class="slot-drop-zone" style="min-height: 80px; display: flex; align-items: center; justify-content: center; border-radius: 6px; padding: 0.5rem; background: rgba(122, 158, 153, 0.08); transition: all 0.3s ease;">
+                <p class="drop-placeholder-text" style="font-size: 0.85rem; color: var(--color-sage); text-align: center;">Drag & Drop Caregiver Here</p>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         HTML5 Web Storage Section — localStorage & sessionStorage
+         (Assignment 1: S.No 8, 9, 10, 11)
+    =================================================================== -->
+    <section id="storage" class="animate-fade-in-up">
+      <span class="eyebrow">Data Persistence Layer</span>
+      <h2>Web Storage — Local & Session Data Management</h2>
+      <p style="max-width: 720px; margin-bottom: var(--spacing-md); color: var(--color-sage); font-size: 0.95rem;">
+        This panel demonstrates HTML5 <strong>localStorage</strong> (permanent, survives browser close) and <strong>sessionStorage</strong> (temporary, cleared when tab closes). Save, retrieve, and clear user data using the controls below.
+      </p>
+
+      <div class="storage-grid">
+
+        <!-- LOCAL STORAGE PANEL -->
+        <article class="storage-panel hover-lift">
+          <div class="storage-panel-header">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:22px;height:22px;">
+              <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+              <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+              <line x1="12" y1="22.08" x2="12" y2="12"></line>
+            </svg>
+            <h3>Local Storage <span class="storage-badge">Permanent</span></h3>
+          </div>
+          <p class="storage-description">Data saved here persists across browser sessions and restarts until explicitly cleared.</p>
+
+          <div class="storage-form-group">
+            <label for="ls-user-name">User Name</label>
+            <input type="text" id="ls-user-name" placeholder="e.g. Varun" />
+          </div>
+          <div class="storage-form-group">
+            <label for="ls-user-role">Care Preference</label>
+            <select id="ls-user-role">
+              <option value="In-Home Care">In-Home Personal Care</option>
+              <option value="Night Shift">24x7 Night Shift Monitoring</option>
+              <option value="Rehabilitation">Specialized Rehabilitation</option>
+              <option value="Medical Escort">Medical Transport & Escort</option>
+              <option value="Emergency Backup">Emergency Backup Routing</option>
+            </select>
+          </div>
+          <div class="storage-form-group">
+            <label for="ls-user-notes">Additional Notes</label>
+            <textarea id="ls-user-notes" rows="2" placeholder="Any special requirements..."></textarea>
+          </div>
+
+          <div class="storage-actions">
+            <button id="ls-save-btn" class="btn btn-submit btn-transition" data-tooltip="Save to localStorage">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;vertical-align:middle;margin-right:4px;"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+              Save Data
+            </button>
+            <button id="ls-retrieve-btn" class="btn btn-cancel btn-transition" data-tooltip="Retrieve from localStorage">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;vertical-align:middle;margin-right:4px;"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
+              Retrieve Data
+            </button>
+            <button id="ls-clear-btn" class="btn btn-reset btn-transition" data-tooltip="Clear all localStorage data">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;vertical-align:middle;margin-right:4px;"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+              Clear Data
+            </button>
+          </div>
+
+          <!-- Output display area -->
+          <div id="ls-output" class="storage-output">
+            <p class="storage-output-placeholder">No data retrieved yet. Click <strong>Retrieve Data</strong> to display stored information.</p>
+          </div>
+        </article>
+
+        <!-- SESSION STORAGE PANEL -->
+        <aside class="storage-panel hover-lift">
+          <div class="storage-panel-header">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:22px;height:22px;">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+            <h3>Session Storage <span class="storage-badge storage-badge-session">Temporary</span></h3>
+          </div>
+          <p class="storage-description">Data saved here is available only for the current browser tab session. It is automatically cleared when the tab is closed.</p>
+
+          <div class="storage-form-group">
+            <label for="ss-session-note">Session Notes</label>
+            <input type="text" id="ss-session-note" placeholder="e.g. Checking availability for father" />
+          </div>
+          <div class="storage-form-group">
+            <label for="ss-priority">Priority Level</label>
+            <select id="ss-priority">
+              <option value="Normal">Normal</option>
+              <option value="High">High</option>
+              <option value="Urgent">Urgent — Immediate Attention</option>
+            </select>
+          </div>
+
+          <div class="storage-info-row">
+            <span class="storage-info-label">Session Started:</span>
+            <span id="ss-session-time" class="storage-info-value">—</span>
+          </div>
+          <div class="storage-info-row">
+            <span class="storage-info-label">Tab Session ID:</span>
+            <span id="ss-session-id" class="storage-info-value">—</span>
+          </div>
+
+          <div class="storage-actions">
+            <button id="ss-save-btn" class="btn btn-submit btn-transition" data-tooltip="Save to sessionStorage">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;vertical-align:middle;margin-right:4px;"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+              Save Session
+            </button>
+            <button id="ss-retrieve-btn" class="btn btn-cancel btn-transition" data-tooltip="Retrieve from sessionStorage">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;vertical-align:middle;margin-right:4px;"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
+              Retrieve Session
+            </button>
+            <button id="ss-clear-btn" class="btn btn-reset btn-transition" data-tooltip="Clear all sessionStorage data">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;vertical-align:middle;margin-right:4px;"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+              Clear Session
+            </button>
+          </div>
+
+          <!-- Output display area -->
+          <div id="ss-output" class="storage-output">
+            <p class="storage-output-placeholder">No session data retrieved yet. Click <strong>Retrieve Session</strong> to view.</p>
+          </div>
+        </aside>
+
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         Assignment 1 — Event Handling Module Hub
+         Links out to the 7 dedicated event-handling demo pages.
+    =================================================================== -->
+    <section id="assignment1" class="animate-fade-in-up">
+      <span class="eyebrow">Assignment 1 — Event Handling</span>
+      <h2>Interactive Event-Handling Modules</h2>
+      <p style="margin-bottom: 1rem; color: var(--color-sage);">
+        Seven standalone pages demonstrating <code>addEventListener()</code>-only event handling: clicks, hovers, form
+        submission, timers, and event delegation.
+      </p>
+      <div class="grid-cards-container">
+        <a href="directory.html" class="feature-card hover-lift" style="text-decoration: none; color: inherit; display: block;">
+          <h3>Caregiver Directory</h3>
+          <p>Search, filter, favorite, and book caregivers with live hover bios.</p>
+        </a>
+        <a href="video.html" class="feature-card hover-lift" style="text-decoration: none; color: inherit; display: block;">
+          <h3>Care Guide Videos</h3>
+          <p>Custom HTML5 video player with play/pause, volume, and seek.</p>
+        </a>
+        <a href="signup.html" class="feature-card hover-lift" style="text-decoration: none; color: inherit; display: block;">
+          <h3>Sign Up</h3>
+          <p>Account creation form with live validation and password match check.</p>
+        </a>
+        <a href="quiz.html" class="feature-card hover-lift" style="text-decoration: none; color: inherit; display: block;">
+          <h3>Certification Quiz</h3>
+          <p>Timed screening assessment with auto-submit on timeout.</p>
+        </a>
+        <a href="shift-notes.html" class="feature-card hover-lift" style="text-decoration: none; color: inherit; display: block;">
+          <h3>Shift Notes / Care Log</h3>
+          <p>Post updates, reply via event delegation, double-click to edit.</p>
+        </a>
+        <a href="dashboard.html" class="feature-card hover-lift" style="text-decoration: none; color: inherit; display: block;">
+          <h3>Shift Dashboard</h3>
+          <p>Expandable shift cards with a live-recalculating task checklist.</p>
+        </a>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         Gallery Section (S.No 22 CSS Grid, S.No 29 Image Effects)
+    =================================================================== -->
+    <section id="gallery" class="animate-fade-in-up">
+      <span class="eyebrow">Life at Assisterly</span>
+      <h2>Care Facility & Training Gallery</h2>
+      <div class="gallery-grid">
+        <div class="gallery-item img-zoom" data-tooltip="Clinical Skills Workshop">
+          <div class="gallery-placeholder" style="background: #1F3D3B; color: #E8DCC8;">Skills Center</div>
+        </div>
+        <div class="gallery-item img-grayscale" data-tooltip="Emergency Response Drills">
+          <div class="gallery-placeholder" style="background: #C66B3D; color: #FAF7F2;">Emergency Drill</div>
+        </div>
+        <div class="gallery-item img-blur" data-tooltip="Patient Comfort Equipment">
+          <div class="gallery-placeholder" style="background: #7A9E99; color: #1F3D3B;">Patient Suite</div>
+        </div>
+        <div class="gallery-item img-zoom" data-tooltip="Background Verification Desk">
+          <div class="gallery-placeholder" style="background: #E8DCC8; color: #1F3D3B;">Audit Desk</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         Reviews Section (S.No 22 CSS Grid)
+    =================================================================== -->
+    <section id="reviews" class="animate-fade-in-up">
+      <span class="eyebrow">Testimonials</span>
+      <h2>What Families Say</h2>
+      <div class="grid-cards-container">
+        <div class="review-card hover-lift">
+          <p class="review-text">"Assisterly provided an exceptional nurse for my bedridden father post-stroke. The shift logs and transparency gave our family total peace of mind."</p>
+          <p class="review-author">— Dr. Arvind Swamy, Chennai</p>
+        </div>
+        <div class="review-card hover-lift">
+          <p class="review-text">"The emergency backup service is incredible. When our primary helper fell sick, Assisterly routed a replacement within 25 minutes!"</p>
+          <p class="review-author">— Priya Sundaram, Coimbatore</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Marquee Banner -->
+    <div class="marquee-bar" style="margin: 2rem 0;">
+      <marquee class="marquee-content" behavior="scroll" direction="left">
+        <span>🚨 Emergency response standby average reduced to 2.4 minutes system-wide.</span>
+        <span>📢 New specialized neuro-muscular rehabilitation training active for all tier-3 caregivers.</span>
+        <span>✅ Over 99.4% of active helpers have completed mandatory criminal background clearances.</span>
+        <span>📈 The Q2 platform dashboard update goes live: improved billing statements and clinical receipts.</span>
+      </marquee>
+    </div>
+
+    <!-- ===================================================================
+         12 & 13. Caregiver Registration Form with JS Validation (S.No 12, 13, 15, 23 Flexbox)
+    =================================================================== -->
+    <section id="register" class="registration-container animate-fade-in-up">
+      <div class="registration-card">
+        <span class="eyebrow">Onboarding & Booking Portal</span>
+        <h2>Caregiver & Patient Registration</h2>
+        <p style="margin-bottom: var(--spacing-md); font-size: 0.9rem; color: var(--color-sage);">Submit the form below to initialize a caregiver background clearance or book home care support.</p>
+
+        <!-- Form Error Banner -->
+        <div id="form-error-banner" class="form-error-banner" style="display: none;"></div>
+
+        <form id="caregiver-form" action="#" method="POST" novalidate>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="full-name">Full Name <span style="color: var(--color-terracotta);">*</span></label>
+              <input type="text" id="full-name" name="fullName" required placeholder="e.g. Jonathan Doe">
+            </div>
+
+            <div class="form-group">
+              <label for="email">Email Address <span style="color: var(--color-terracotta);">*</span></label>
+              <input type="email" id="email" name="email" required placeholder="e.g. john@assisterly.com">
+            </div>
+
+            <div class="form-group">
+              <label for="phone">Phone Number (10 Digits) <span style="color: var(--color-terracotta);">*</span></label>
+              <input type="tel" id="phone" name="phone" required pattern="[6-9][0-9]{9}" placeholder="e.g. 9876543210">
+            </div>
+
+            <div class="form-group">
+              <label for="booking-date">Service Date <span style="color: var(--color-terracotta);">*</span></label>
+              <input type="date" id="booking-date" name="bookingDate" required>
+            </div>
+
+            <div class="form-group">
+              <label for="preferred-time">Shift / Time Preference <span style="color: var(--color-terracotta);">*</span></label>
+              <input type="time" id="preferred-time" name="preferredTime" required>
+            </div>
+
+            <div class="form-group">
+              <label for="guest-count">Number of Patients / Individuals</label>
+              <input type="number" id="guest-count" name="guestCount" min="1" max="10" value="1" required>
+            </div>
+
+            <div class="form-group">
+              <label for="seating-preference">Seating & Care Preference</label>
+              <select id="seating-preference" name="seatingPreference" style="width: 100%; padding: 0.75rem; border: 1px solid var(--color-sage); border-radius: 4px; background: var(--bg-light); color: var(--color-ink);">
+                <option value="in-home">In-Home Personal Care</option>
+                <option value="medical-escort">Hospital Escort Transport</option>
+                <option value="night-shift">24x7 Night Shift Monitoring</option>
+                <option value="rehab">Specialized Post-Stroke Rehabilitation</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="age">Age (Years)</label>
+              <input type="number" id="age" name="age" min="18" max="75" required placeholder="e.g. 28">
+            </div>
+
+            <div class="form-group full-width">
+              <label for="address">Residential Address <span style="color: var(--color-terracotta);">*</span></label>
+              <textarea id="address" name="address" required spellcheck="true" placeholder="Provide house number, street name, city, state, and postal code..."></textarea>
+            </div>
+
+            <div class="form-actions full-width" style="display: flex; gap: 1rem; justify-content: flex-end; flex-wrap: wrap;"> <!-- Flexbox Form Actions S.No 23 -->
+              <button type="reset" id="btn-reset" class="btn btn-reset btn-transition" data-tooltip="Clear Form Inputs">Reset Form</button>
+              <button type="submit" id="btn-submit" class="btn btn-submit btn-transition" data-tooltip="Submit Registration">Submit Registration</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         17. Contact Information Section (S.No 17, 28 SVG Icons)
+    =================================================================== -->
+    <section id="contact" class="animate-fade-in-up">
+      <span class="eyebrow">Get in Touch</span>
+      <h2>Support Contacts & Location</h2>
+      <div class="contact-grid">
+        <!-- Card 1 -->
+        <div class="contact-card hover-lift">
+          <svg class="contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+            <polyline points="22,6 12,13 2,6" />
+          </svg>
+          <h3>Email Support</h3>
+          <p><a href="mailto:support@assisterly.com" style="color: var(--color-terracotta);">support@assisterly.com</a></p>
+        </div>
+        <!-- Card 2 -->
+        <div class="contact-card hover-lift">
+          <svg class="contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+          </svg>
+          <h3>Emergency Helpline</h3>
+          <p><a href="tel:+911800102123" style="color: var(--color-terracotta);">+91 1800 102 123</a></p>
+        </div>
+        <!-- Card 3 -->
+        <div class="contact-card hover-lift">
+          <svg class="contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+            <circle cx="12" cy="10" r="3" />
+          </svg>
+          <h3>Office Headquarters</h3>
+          <p>Assisterly Complex, Peelamedu, Coimbatore, TN, IN</p>
+        </div>
+        <!-- Card 4 -->
+        <div class="contact-card hover-lift">
+          <svg class="contact-icon animate-spin-slow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="18" cy="5" r="3" />
+            <circle cx="6" cy="12" r="3" />
+            <circle cx="18" cy="19" r="3" />
+            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+          </svg>
+          <h3>Social Media Channels</h3>
+          <div class="social-links" style="display: flex; gap: 0.75rem; justify-content: center; margin-top: 0.5rem;">
+            <a href="https://linkedin.com" target="_blank" rel="noopener">LinkedIn</a> |
+            <a href="https://instagram.com" target="_blank" rel="noopener">Instagram</a> |
+            <a href="https://twitter.com" target="_blank" rel="noopener">Twitter / X</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Google Maps Embed Placeholder (S.No 17) -->
+      <div class="map-container" style="margin-top: 2rem; border-radius: 8px; overflow: hidden; border: 1px solid var(--color-sage);">
+        <iframe title="Assisterly Location Map" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3916.273641235654!2d76.9960!3d11.0250!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTHCsDAxJzMwLjAiTiA3NsKwNTknNDUuNiJF!5e0!3m2!1sen!2sin!4v1625000000000!5m2!1sen!2sin" width="100%" height="250" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+      </div>
+    </section>
+
+    <!-- Logout / Session Section (S.No 2 Nav Requirement) -->
+    <section id="logout" class="animate-fade-in-up" style="margin-bottom: 3rem;">
+      <div class="about-panel hover-lift" style="background-color: var(--color-sand); border: 1px solid rgba(198, 107, 61, 0.2);">
+        <span class="eyebrow" style="color: var(--color-terracotta);">Clinical Terminal Session</span>
+        <h3 style="color: var(--color-pine); margin-bottom: 0.5rem;">Session Manager</h3>
+        <p style="font-size: 0.95rem; margin-bottom: var(--spacing-sm);">
+          You are currently logged in to the Assisterly Care Coordinator portal. If leaving this workstation, please secure your session.
+        </p>
+        <button onclick="alert('Session secured. Logging out...'); window.location.reload();" class="btn btn-reset btn-transition">Secure Terminal & Logout</button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===================================================================
+       18. Footer Section (S.No 18 Copyright, Developer Name, Social Icons)
+  =================================================================== -->
+  <footer>
+    <div class="container" style="text-align: center; padding: 2rem 0;">
+      <p>&copy; 2026 <strong>Assisterly Care Network</strong>. All rights reserved.</p>
+      <p style="margin-top: 0.5rem;">Developed by <strong>Varun</strong> (Register No: <strong>23IT721</strong> / 2303717620521057) | <strong>Sri Krishna College of Technology</strong>, Coimbatore.</p>
+      <p style="margin-top: 0.25rem; font-size: 0.85rem; color: var(--color-sage);">23IT721 — Full Stack Development Laboratory | Department of Information Technology</p>
+      
+      <!-- Footer Social Media Icons (S.No 18, 28) -->
+      <div class="footer-social-icons" style="margin-top: 1rem; display: flex; justify-content: center; gap: 1.25rem;">
+        <a href="https://linkedin.com" target="_blank" rel="noopener" aria-label="LinkedIn" data-tooltip="Follow on LinkedIn">
+          <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+        </a>
+        <a href="https://instagram.com" target="_blank" rel="noopener" aria-label="Instagram" data-tooltip="Follow on Instagram">
+          <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+        </a>
+        <a href="https://twitter.com" target="_blank" rel="noopener" aria-label="Twitter" data-tooltip="Follow on Twitter / X">
+          <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/></svg>
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===================================================================
+       16. Floating Back to Top Button (S.No 16, Fixed Positioning S.No 30)
+  =================================================================== -->
+  <button id="scroll-top" class="scroll-top-btn btn-transition" aria-label="Scroll back to top" data-tooltip="Back to Top">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="18 15 12 9 6 15"></polyline>
+    </svg>
+  </button>
+
+</body>
+
+</html>
